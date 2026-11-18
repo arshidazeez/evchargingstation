@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Profile | VoltVault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --electric-purple: #b967ff;
+            --cyber-blue: #0066ff;
+            --dark-space: #0a0e17;
+            --space-gray: #1a1f2e;
+            --light-space: #2a3042;
+            --pure-white: #ffffff;
+            --success-green: #00ff88;
+            --warning-yellow: #ffcc00;
+            --error-red: #ff4757;
+            --info-blue: #3498db;
+            --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            --purple-glow: 0 0 25px rgba(185, 103, 255, 0.4);
+            --gradient-1: linear-gradient(135deg, #0066ff 0%, #00f3ff 50%, #b967ff 100%);
+            --gradient-2: linear-gradient(45deg, #b967ff 0%, #0066ff 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--pure-white);
+            background-color: var(--dark-space);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(0, 102, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(185, 103, 255, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .float-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .float-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--neon-blue);
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .float-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--electric-purple);
+            bottom: 15%;
+            left: 10%;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -50px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(26, 31, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 243, 255, 0.1);
+            padding: 25px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--neon-blue);
+            font-size: 2rem;
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--dark-space);
+        }
+
+        .user-details h4 {
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .user-details p {
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            font-weight: 500;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            color: #b0b7d0;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--pure-white);
+            padding-left: 30px;
+        }
+
+        .nav-link.active {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            font-weight: 600;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--neon-blue);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Manager Profile Container */
+        .manager-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Manager Header */
+        .manager-header {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manager-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .manager-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--gradient-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--dark-space);
+            position: relative;
+            border: 4px solid var(--space-gray);
+            box-shadow: var(--purple-glow);
+        }
+
+        .avatar-edit {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 35px;
+            height: 35px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-space);
+            cursor: pointer;
+            border: 2px solid var(--space-gray);
+            transition: all 0.3s;
+        }
+
+        .avatar-edit:hover {
+            transform: scale(1.1);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .manager-info h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .manager-info p {
+            color: #b0b7d0;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .manager-since {
+            color: var(--electric-purple);
+            font-weight: 500;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Profile Sections */
+        .profile-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .profile-section {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            position: relative;
+        }
+
+        .profile-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-1);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .section-header i {
+            font-size: 1.5rem;
+            color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            color: #b0b7d0;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 12px;
+            color: var(--pure-white);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 3px rgba(0, 243, 255, 0.1);
+        }
+
+        input:disabled, select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--neon-blue);
+        }
+
+        /* Company Information */
+        .company-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--dark-space);
+            font-weight: 700;
+        }
+
+        /* Stations Management */
+        .stations-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .station-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .station-item:last-child {
+            border-bottom: none;
+        }
+
+        .station-item:hover {
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        .station-details h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .station-details p {
+            color: #7a819c;
+            font-size: 0.85rem;
+        }
+
+        .station-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-active {
+            background: var(--success-green);
+            box-shadow: 0 0 10px var(--success-green);
+            animation: pulse 2s infinite;
+        }
+
+        .status-inactive {
+            background: var(--error-red);
+        }
+
+        /* Password Strength */
+        .password-strength {
+            margin-top: 8px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--error-red);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .strength-bar.weak {
+            width: 33%;
+            background: var(--error-red);
+        }
+        .strength-bar.medium {
+            width: 66%;
+            background: var(--warning-yellow);
+        }
+        .strength-bar.strong {
+            width: 100%;
+            background: var(--success-green);
+        }
+
+        .password-hint {
+            font-size: 0.8rem;
+            color: #7a819c;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--error-red);
+            border: 1px solid var(--error-red);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .btn-purple {
+            background: transparent;
+            color: var(--electric-purple);
+            border: 1px solid var(--electric-purple);
+        }
+
+        .btn-purple:hover {
+            background: rgba(185, 103, 255, 0.1);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        /* Account Status */
+        .account-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(185, 103, 255, 0.1);
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 1px solid rgba(185, 103, 255, 0.2);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-new {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success-green);
+            border: 1px solid var(--success-green);
+        }
+
+        .status-suspended {
+            background: rgba(255, 71, 87, 0.1);
+            color: var(--error-red);
+            border: 1px solid var(--error-red);
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--neon-blue);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--electric-purple);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-blue);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 20px 25px;
+            background: rgba(26, 31, 46, 0.95);
+            border-radius: 15px;
+            border: 1px solid var(--success-green);
+            color: var(--success-green);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 10000;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            border-color: var(--error-red);
+            color: var(--error-red);
+            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.2);
+        }
+
+        .notification.warning {
+            border-color: var(--warning-yellow);
+            color: var(--warning-yellow);
+            box-shadow: 0 5px 20px rgba(255, 204, 0, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: var(--gradient-2);
+                color: var(--dark-space);
+                border: none;
+                width: 50px;
+                height: 50px;
+                border-radius: 12px;
+                font-size: 1.2rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .manager-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .company-info {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .profile-section,
+            .manager-header {
+                padding: 25px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .section-header i {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="float-circle float-1"></div>
+        <div class="float-circle float-2"></div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/manager/" class="logo">
+                <i class="fas fa-bolt logo-icon"></i>
+                <span>VoltVault</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="/manager/" class="nav-link">
+                        <i class="fas fa-home nav-icon"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/my-stations/" class="nav-link">
+                        <i class="fas fa-charging-station nav-icon"></i>
+                        My Stations
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/bookings/" class="nav-link">
+                        <i class="fas fa-calendar-check nav-icon"></i>
+                        Bookings
+                    </a>
+                </li><li class="nav-item">
+                    <a href="/emergency-bookings/" class="nav-link">
+                        <i class="fas fa-calendar-check nav-icon"></i>
+                        Emergency Bookings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/manager-profile/" class="nav-link active">
+                        <i class="fas fa-user-tie nav-icon"></i>
+                        manager Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-cog nav-icon"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Manager Profile</h1>
+                <p>
+                    <i class="fas fa-user-tie"></i>
+                    Manage your manager account and station assignments
+                </p>
+            </div>
+            <div class="header-right">
+                <a href="/manager/" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </header>
+
+        <!-- Manager Container -->
+        <div class="manager-container">
+            <!-- Manager Header -->
+            <div class="manager-header animate-fadeIn">
+                <div class="manager-avatar" id="managerAvatar">
+                    JS
+                    <div class="avatar-edit" onclick="changeAvatar()">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                <div class="manager-info">
+                    <h2 id="managerName">John Smith</h2>
+                    <p>
+                        <i class="fas fa-building"></i>
+                        <span id="managerCompany">ElectroGrid Solutions</span>
+                    </p>
+                    <p>
+                        <i class="fas fa-envelope"></i>
+                        <span id="managerEmail">john@electrogrid.com</span>
+                    </p>
+                    <p>
+                        <i class="fas fa-phone"></i>
+                        <span id="managerPhone">+1234567890</span>
+                    </p>
+                    <div class="account-status">
+                        <span class="status-badge status-active" id="managerRights">Active Manager</span>
+                        <span class="manager-since">
+                            <i class="fas fa-calendar-star"></i>
+                            Manager since: <span id="managerSince">Mar 15, 2023</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Sections -->
+            <form id="profileForm" method="post">
+                {% csrf_token %}
+                <div class="profile-sections">
+                    <!-- Personal Information -->
+                    <div class="profile-section animate-fadeIn">
+                        <div class="section-header">
+                            <i class="fas fa-user-tie"></i>
+                            <h3>Personal Information</h3>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                                <i class="fas fa-user input-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <div class="input-wrapper">
+                                    <input type="email" id="email" name="email" placeholder="manager@company.com" required>
+                                    <i class="fas fa-envelope input-icon"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <div class="input-wrapper">
+                                    <input type="tel" id="phone" name="phone" placeholder="+1234567890" required>
+                                    <i class="fas fa-phone input-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Company Information -->
+                    <div class="profile-section animate-fadeIn" style="animation-delay: 0.1s">
+                        <div class="section-header">
+                            <i class="fas fa-building"></i>
+                            <h3>Company Information</h3>
+                        </div>
+
+                        <div class="company-info">
+                            <div class="company-logo" id="companyLogo">EG</div>
+                            <div>
+                                <h4 id="companyNameDisplay">ElectroGrid Solutions</h4>
+                                <p id="companyTypeDisplay">Premium Network Operator</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="company">Company Name</label>
+                            <input type="text" id="company" name="company" placeholder="Enter company name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rights">Account Status</label>
+                            <select id="rights" name="rights" disabled>
+                                <option value="New Manager">New Manager</option>
+                                <option value="Active Manager">Active Manager</option>
+                                <option value="Senior Manager">Senior Manager</option>
+                                <option value="Suspended">Suspended</option>
+                            </select>
+                            <p style="color: #7a819c; font-size: 0.85rem; margin-top: 5px;">
+                                <i class="fas fa-info-circle"></i>
+                                Account status can only be changed by administrators
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Stations Management -->
+
+                    <!-- Security -->
+                    <div class="profile-section animate-fadeIn" style="animation-delay: 0.3s">
+                        <div class="section-header">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>Security Settings</h3>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="newPassword" name="password" placeholder="Enter new password" autocomplete="new-password">
+                                <i class="fas fa-key input-icon"></i>
+                            </div>
+                            <div class="password-strength">
+                                <div class="strength-bar" id="passwordStrength"></div>
+                            </div>
+                            <div class="password-hint">
+                                <i class="fas fa-lightbulb"></i>
+                                Use at least 8 characters with numbers and symbols
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <div class="input-wrapper">
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">
+                                <i class="fas fa-redo input-icon"></i>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-secondary btn-small" onclick="togglePasswordVisibility()">
+                            <i class="fas fa-eye"></i>
+                            Show Passwords
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons animate-fadeIn" style="animation-delay: 0.4s">
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        <i class="fas fa-undo"></i>
+                        Reset Changes
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <div>
+            <strong>Success!</strong>
+            <div id="notificationMessage">Your profile has been updated successfully.</div>
+        </div>
+    </div>
+
+    <script>
+        // Sample manager data (replace with actual Django data)
+        const managerData = {
+            name: "{{manager.name}}",
+            email: "{{manager.email}}",
+            phone: "{{manager.phone}}",
+            company: "{{manager.company}}",
+            type: "{{manager.type}}",
+            stations: "{{manager.stations}}",
+            password: "",
+            date: "{{manager.date}}",
+            rights: "Active Manager"
+        };
+
+        // DOM Elements
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const profileForm = document.getElementById('profileForm');
+        const notification = document.getElementById('notification');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const newPasswordInput = document.getElementById('newPassword');
+
+        // Initialize form with manager data
+        function initForm() {
+            // Update sidebar
+
+            // Update manager header
+            document.getElementById('managerName').textContent = managerData.name;
+            document.getElementById('managerEmail').textContent = managerData.email;
+            document.getElementById('managerPhone').textContent = managerData.phone;
+            document.getElementById('managerCompany').textContent = managerData.company;
+            document.getElementById('managerRights').textContent = managerData.rights;
+            document.getElementById('managerAvatar').textContent = getInitials(managerData.name);
+            document.getElementById('managerSince').textContent = formatDate(managerData.date);
+
+            // Update company display
+            document.getElementById('companyNameDisplay').textContent = managerData.company;
+            document.getElementById('companyLogo').textContent = getInitials(managerData.company);
+
+            // Update form fields
+            document.getElementById('name').value = managerData.name;
+            document.getElementById('email').value = managerData.email;
+            document.getElementById('phone').value = managerData.phone;
+            document.getElementById('company').value = managerData.company;
+            document.getElementById('rights').value = managerData.rights;
+
+            // Set rights badge class
+            const rightsBadge = document.getElementById('managerRights');
+            rightsBadge.className = 'status-badge';
+            if (managerData.rights === 'New Manager') rightsBadge.classList.add('status-new');
+            else if (managerData.rights === 'Active Manager') rightsBadge.classList.add('status-active');
+            else rightsBadge.classList.add('status-suspended');
+
+            // Update company type display based on type
+            document.getElementById('companyTypeDisplay').textContent =
+                managerData.type === 'Regional Director' ? 'Regional Network Operator' :
+                managerData.type === 'Area Manager' ? 'Area Network Operator' :
+                'Premium Network Operator';
+
+        }
+
+        // Get initials from name
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+
+
+        // Change avatar
+        function changeAvatar() {
+            alert('Avatar change feature would open here.\nYou can upload a new profile picture.');
+            // In a real app, this would open a file upload dialog
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordFields = [ 'newPassword', 'confirmPassword'];
+            const showIcon = '<i class="fas fa-eye"></i> Show Passwords';
+            const hideIcon = '<i class="fas fa-eye-slash"></i> Hide Passwords';
+            const button = event.target.closest('button');
+
+            passwordFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field.type === 'password') {
+                    field.type = 'text';
+                    button.innerHTML = hideIcon;
+                } else {
+                    field.type = 'password';
+                    button.innerHTML = showIcon;
+                }
+            });
+        }
+
+        // Check password strength
+        function checkPasswordStrength(password) {
+            let strength = 0;
+
+            // Length check
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+
+            // Complexity checks
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            // Update strength bar
+            const strengthBar = passwordStrength;
+            strengthBar.classList.remove('weak', 'medium', 'strong');
+
+            if (password.length === 0) {
+                strengthBar.style.width = '0%';
+            } else if (strength <= 2) {
+                strengthBar.classList.add('weak');
+            } else if (strength <= 4) {
+                strengthBar.classList.add('medium');
+            } else {
+                strengthBar.classList.add('strong');
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notificationMessage');
+
+            notification.className = 'notification';
+            notification.classList.add(type, 'show');
+            messageEl.innerHTML = message;
+
+            // Update icon
+            const icon = notification.querySelector('i');
+            icon.className = type === 'success' ? 'fas fa-check-circle' :
+                            type === 'error' ? 'fas fa-exclamation-circle' :
+                            'fas fa-exclamation-triangle';
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Reset form to original values
+        function resetForm() {
+            if (confirm('Are you sure you want to reset all changes?')) {
+                initForm();
+                showNotification('Form reset to original values', 'info');
+            }
+        }
+
+        // Deactivate account
+
+
+        // Form submission
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                company: document.getElementById('company').value,
+                newPassword: document.getElementById('newPassword').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                rights: document.getElementById('rights').value
+            };
+
+            // Validate passwords
+            if (formData.newPassword) {
+                if (formData.newPassword !== formData.confirmPassword) {
+                    showNotification('New passwords do not match!', 'error');
+                    return;
+                }
+
+
+
+                if (formData.newPassword.length < 8) {
+                    showNotification('New password must be at least 8 characters long', 'error');
+                    return;
+                }
+            }
+
+
+
+            // Show loading
+            const submitBtn = profileForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="loading"></span> Saving...';
+            submitBtn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+                // Update manager data (in real app, this would be an API call)
+                managerData.name = formData.name;
+                managerData.email = formData.email;
+                managerData.phone = formData.phone;
+                managerData.company = formData.company;
+                managerData.type = formData.type;
+
+                // Update UI
+                initForm();
+
+                // Show success
+                showNotification('Profile updated successfully!', 'success');
+                document.getElementById('profileForm').submit();
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 1500);
+        });
+
+        // Event Listeners
+        mobileMenuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                ? '<i class="fas fa-times"></i>'
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Password strength checker
+        newPasswordInput.addEventListener('input', function() {
+            checkPasswordStrength(this.value);
+        });
+
+        // Company name change
+        document.getElementById('company').addEventListener('input', function() {
+            const initials = getInitials(this.value);
+            document.getElementById('companyLogo').textContent = initials;
+            document.getElementById('companyNameDisplay').textContent = this.value || 'Company Name';
+        });
+
+
+
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl + S to save
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                profileForm.requestSubmit();
+            }
+
+            // Esc to close notification
+            if (e.key === 'Escape' && notification.classList.contains('show')) {
+                notification.classList.remove('show');
+            }
+        });
+
+        // Responsive sidebar toggle
+        function checkScreenSize() {
+            if (window.innerWidth <= 992) {
+                mobileMenuToggle.style.display = 'block';
+            } else {
+                mobileMenuToggle.style.display = 'none';
+                sidebar.classList.remove('active');
+            }
+        }
+
+        window.addEventListener('resize', checkScreenSize);
+        checkScreenSize();
+
+        // Initialize form
+        initForm();
+    </script>
+</body>
+</html>

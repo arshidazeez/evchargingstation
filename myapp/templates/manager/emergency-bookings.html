@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Bookings | VoltVault</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        /* Keep all your existing CSS variables and styles */
+        :root {
+            --neon-blue: #00f3ff;
+            --electric-purple: #b967ff;
+            --cyber-blue: #0066ff;
+            --dark-space: #0a0e17;
+            --space-gray: #1a1f2e;
+            --light-space: #2a3042;
+            --pure-white: #ffffff;
+            --success-green: #00ff88;
+            --warning-yellow: #ffcc00;
+            --error-red: #ff4757;
+            --info-blue: #3498db;
+            --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            --purple-glow: 0 0 25px rgba(185, 103, 255, 0.4);
+            --gradient-1: linear-gradient(135deg, #0066ff 0%, #00f3ff 50%, #b967ff 100%);
+            --gradient-2: linear-gradient(45deg, #b967ff 0%, #0066ff 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--pure-white);
+            background-color: var(--dark-space);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(0, 102, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(185, 103, 255, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .float-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .float-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--neon-blue);
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .float-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--electric-purple);
+            bottom: 15%;
+            left: 10%;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -50px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(26, 31, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 243, 255, 0.1);
+            padding: 25px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--neon-blue);
+            font-size: 2rem;
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--dark-space);
+        }
+
+        .user-details h4 {
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .user-details p {
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            font-weight: 500;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            color: #b0b7d0;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--pure-white);
+            padding-left: 30px;
+        }
+
+        .nav-link.active {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            font-weight: 600;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--neon-blue);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--electric-purple);
+            color: var(--pure-white);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .station-badge {
+            background: var(--gradient-2);
+            color: var(--dark-space);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            color: #b0b7d0;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .notification-btn:hover {
+            color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--error-red);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .quick-action-btn {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+        }
+
+        /* Emergency Bookings Container */
+        .emergency-container {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.1);
+        }
+
+        .emergency-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 71, 87, 0.2);
+        }
+
+        .emergency-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--error-red);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .emergency-header h2 i {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-label {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            min-width: 150px;
+            cursor: pointer;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #b0b7d0;
+        }
+
+        /* Emergency Bookings Table */
+        .emergency-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .emergency-table thead {
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .emergency-table th {
+            padding: 15px;
+            text-align: left;
+            color: var(--error-red);
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 71, 87, 0.2);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .emergency-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #b0b7d0;
+        }
+
+        .emergency-table tbody tr {
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .emergency-table tbody tr:hover {
+            background: rgba(255, 71, 87, 0.05);
+            border-left: 3px solid var(--error-red);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .status-booked {
+            background: rgba(255, 71, 87, 0.1);
+            color: var(--error-red);
+            border: 1px solid var(--error-red);
+        }
+
+        .status-dispatched {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--warning-yellow);
+            border: 1px solid var(--warning-yellow);
+        }
+
+        .status-in-progress {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--info-blue);
+            border: 1px solid var(--info-blue);
+        }
+
+        .status-completed {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success-green);
+            border: 1px solid var(--success-green);
+        }
+
+        /* User Info */
+        .user-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-contact {
+            font-size: 0.8rem;
+            color: #7a819c;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .view-btn {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+        }
+
+        .dispatch-btn {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--warning-yellow);
+            border: 1px solid var(--warning-yellow);
+        }
+
+        .complete-btn {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success-green);
+            border: 1px solid var(--success-green);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #7a819c;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: rgba(255, 71, 87, 0.3);
+        }
+
+        .empty-state h3 {
+            color: #b0b7d0;
+            margin-bottom: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Emergency Details Modal */
+        .emergency-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 23, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .emergency-modal.active {
+            display: flex;
+        }
+
+        .emergency-modal-content {
+            background: rgba(26, 31, 46, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            box-shadow: 0 0 30px rgba(255, 71, 87, 0.2);
+            backdrop-filter: blur(10px);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .emergency-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 71, 87, 0.2);
+        }
+
+        .emergency-modal-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            color: var(--error-red);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-emergency-modal {
+            background: none;
+            border: none;
+            color: #b0b7d0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-emergency-modal:hover {
+            color: var(--error-red);
+        }
+
+        /* Modal Grid */
+        .modal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .modal-section {
+            margin-bottom: 20px;
+        }
+
+        .modal-section h4 {
+            color: var(--neon-blue);
+            margin-bottom: 10px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .modal-info p {
+            margin-bottom: 8px;
+            color: #b0b7d0;
+        }
+
+        .modal-info strong {
+            color: white;
+            margin-right: 5px;
+        }
+
+        /* Map Container */
+        .map-container {
+            grid-column: 1 / -1;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7a819c;
+            position: relative;
+        }
+
+        #emergencyMap {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            z-index: 1;
+        }
+
+        .map-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Modal Actions */
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--error-red);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--error-red);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--warning-yellow);
+        }
+
+        /* Leaflet Customization */
+        .leaflet-container {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-space);
+        }
+
+        .leaflet-popup-content-wrapper {
+            background: var(--space-gray);
+            color: var(--pure-white);
+            border-radius: 10px;
+            border: 1px solid var(--neon-blue);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .leaflet-popup-content {
+            margin: 12px 15px;
+            line-height: 1.4;
+        }
+
+        .leaflet-popup-tip {
+            background: var(--space-gray);
+            border: 1px solid var(--neon-blue);
+        }
+
+        /* Custom Emergency Marker */
+        .emergency-marker {
+            background: var(--error-red);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            box-shadow: 0 0 10px var(--error-red);
+            animation: pulse-marker 2s infinite;
+        }
+
+        .emergency-marker::after {
+            content: '!';
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        @keyframes pulse-marker {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: none;
+                border: none;
+                color: var(--error-red);
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            .header {
+                margin-top: 60px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .emergency-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .emergency-modal-content {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .emergency-container {
+                padding: 20px;
+            }
+
+            .emergency-table th,
+            .emergency-table td {
+                padding: 10px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="float-circle float-1"></div>
+        <div class="float-circle float-2"></div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/manager/" class="logo">
+                <i class="fas fa-bolt logo-icon"></i>
+                <span>VoltVault</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="/manager/" class="nav-link">
+                        <i class="fas fa-home nav-icon"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/my-stations/" class="nav-link">
+                        <i class="fas fa-charging-station nav-icon"></i>
+                        My Stations
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/bookings/" class="nav-link">
+                        <i class="fas fa-calendar-check nav-icon"></i>
+                        Bookings
+                    </a>
+                </li><li class="nav-item">
+                    <a href="/emergency-bookings/" class="nav-link active">
+                        <i class="fas fa-calendar-check nav-icon"></i>
+                        Emergency Bookings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/manager-profile/" class="nav-link">
+                        <i class="fas fa-user-tie nav-icon"></i>
+                        manager Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-cog nav-icon"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Emergency Bookings</h1>
+                <p>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Critical charging requests requiring immediate attention
+                </p>
+            </div>
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="urgentNotifications">0</span>
+                </button>
+                <button class="quick-action-btn" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+            </div>
+        </header>
+
+        <!-- Emergency Bookings Container -->
+        <div class="emergency-container animate-fadeIn">
+            <div class="emergency-header">
+                <h2>
+                    <i class="fas fa-ambulance"></i>
+                    Active Emergency Requests
+                </h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <span class="filter-label">Status:</span>
+                        <select class="filter-select" id="statusFilter">
+                            <option value="all">All Statuses</option>
+                            <option value="Booked">Booked</option>
+                            <option value="Dispatched">Dispatched</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-label">Station:</span>
+                        <select class="filter-select" id="stationFilter">
+                            <option value="all">All Stations</option>
+                            <!-- Stations will be populated -->
+                        </select>
+                    </div>
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search by name, vehicle, or location...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Bookings Table -->
+            <div class="table-container">
+                <table class="emergency-table">
+                    <thead>
+                        <tr>
+                            <th>User Details</th>
+                            <th>Vehicle & Battery</th>
+                            <th>Location</th>
+                            <th>Station</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="emergencyTableBody">
+                        <!-- Emergency bookings will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="fas fa-ambulance"></i>
+                <h3>No Emergency Bookings Found</h3>
+                <p>All emergency requests have been handled or there are no active emergencies.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Emergency Details Modal -->
+    <div class="emergency-modal" id="emergencyModal">
+        <div class="emergency-modal-content">
+            <div class="emergency-modal-header">
+                <h3>
+                    <i class="fas fa-ambulance"></i>
+                    Emergency Booking Details
+                </h3>
+                <button class="close-emergency-modal" id="closeEmergencyModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-grid">
+                <!-- User Information -->
+                <div class="modal-section">
+                    <h4><i class="fas fa-user"></i> User Information</h4>
+                    <div class="modal-info">
+                        <p><strong>Name:</strong> <span id="modalUserName"></span></p>
+                        <p><strong>Email:</strong> <span id="modalUserEmail"></span></p>
+                        <p><strong>Phone:</strong> <span id="modalUserPhone"></span></p>
+                    </div>
+                </div>
+
+                <!-- Vehicle Information -->
+                <div class="modal-section">
+                    <h4><i class="fas fa-car"></i> Vehicle Information</h4>
+                    <div class="modal-info">
+                        <p><strong>Model:</strong> <span id="modalVehicleModel"></span></p>
+                        <p><strong>Battery Level:</strong> <span id="modalBatteryLevel"></span></p>
+                        <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+                    </div>
+                </div>
+
+                <!-- Location Information -->
+                <div class="modal-section">
+                    <h4><i class="fas fa-map-marker-alt"></i> Location</h4>
+                    <div class="modal-info">
+                        <p><strong>Address:</strong> <span id="modalLocation"></span></p>
+                        <p><strong>Coordinates:</strong> <span id="modalCoordinates"></span></p>
+                        <p><strong>Station:</strong> <span id="modalStation"></span></p>
+                    </div>
+                </div>
+
+                <!-- Booking Information -->
+                <div class="modal-section">
+                    <h4><i class="fas fa-file-invoice-dollar"></i> Booking Details</h4>
+                    <div class="modal-info">
+                        <p><strong>Price:</strong> ₹<span id="modalPrice"></span></p>
+                        <p><strong>Created:</strong> <span id="modalCreatedAt"></span></p>
+                        <p><strong>Booking ID:</strong> <span id="modalBookingId"></span></p>
+                    </div>
+                </div>
+
+                <!-- Map Container -->
+                <div class="map-container" id="mapContainer">
+                    <div class="map-loading" id="mapLoading">
+                        <span class="loading"></span>
+                        <p>Loading map...</p>
+                    </div>
+                    <div id="emergencyMap"></div>
+                </div>
+
+                <!-- Additional Details -->
+                <div class="modal-section" style="grid-column: 1 / -1;">
+                    <h4><i class="fas fa-sticky-note"></i> Additional Details</h4>
+                    <div class="modal-info">
+                        <p id="modalDetails">No additional details provided.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Actions -->
+            <div class="modal-actions">
+                <button class="action-btn dispatch-btn" id="dispatchBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    Dispatch Assistance
+                </button>
+                <button class="action-btn complete-btn" id="progressBtn">
+                    <i class="fas fa-check-circle"></i>
+                    In Progress
+                </button>
+                <button class="action-btn complete-btn" id="completeBtn">
+                    <i class="fas fa-check-circle"></i>
+                    Mark as Completed
+                </button>
+                <button class="action-btn view-btn" id="closeModalBtn">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <!-- Leaflet MarkerCluster -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <script>
+        // Sample emergency bookings data matching your Django model
+        const emergencyBookings = [
+        {% for i in bookings %}
+            {
+                id: {{i.id}},
+                user: {
+                    name: "{{i.user.name}}",
+                    email: "{{i.email}}",
+                    phone: "{{i.phone}}"
+                },
+                station: {
+                    name: "{{i.station.name}}",
+                    id: "{{i.station.id}}",
+                    latitude: {{i.station.latitude|default:"40.7128"}},
+                    longitude: {{i.station.longitude|default:"-74.0060"}}
+                },
+                name: "{{i.name}}",
+                email: "{{i.email}}",
+                phone: "{{i.phone}}",
+                vehicle_model: "{{i.vehicle_model}}",
+                battery_level: "{{i.battery_level}}%",
+                location: "{{i.location}}",
+                latitude: {{i.latitude}},
+                longitude: {{i.longitude}},
+                details: "{{i.details}}",
+                price: {{i.price}},
+                status: "{{i.status}}",
+                created_at: "{{i.created_at}}"
+            },
+        {% endfor %}
+        ];
+
+        // Map variables
+        let map = null;
+        let markers = [];
+        let markerCluster = null;
+
+        // Get all stations from bookings
+        const stations = [...new Set(emergencyBookings.map(booking => booking.station.name))];
+
+        // DOM Elements
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const emergencyTableBody = document.getElementById('emergencyTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const emergencyModal = document.getElementById('emergencyModal');
+        const closeEmergencyModal = document.getElementById('closeEmergencyModal');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const stationFilter = document.getElementById('stationFilter');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const dispatchBtn = document.getElementById('dispatchBtn');
+        const progressBtn = document.getElementById('progressBtn');
+        const completeBtn = document.getElementById('completeBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const mapContainer = document.getElementById('mapContainer');
+        const emergencyMap = document.getElementById('emergencyMap');
+        const mapLoading = document.getElementById('mapLoading');
+
+        // Current emergency booking being viewed
+        let currentEmergency = null;
+
+        // Custom Emergency Icon for Leaflet
+        const EmergencyIcon = L.divIcon({
+            className: 'emergency-marker',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+            popupAnchor: [0, -12]
+        });
+
+        // Initialize Leaflet map
+        function initMap(lat, lng, zoom = 13) {
+            if (map) {
+                map.remove();
+                map = null;
+            }
+
+            // Show loading
+            mapLoading.style.display = 'flex';
+
+            // Small delay to ensure DOM is ready
+            setTimeout(() => {
+                try {
+                    map = L.map('emergencyMap').setView([lat, lng], zoom);
+
+                    // Use dark theme map tiles
+                    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                        subdomains: 'abcd',
+                        maxZoom: 19
+                    }).addTo(map);
+
+                    // Add emergency location marker
+                    const emergencyMarker = L.marker([lat, lng], { icon: EmergencyIcon })
+                        .addTo(map)
+                        .bindPopup(`
+                            <div style="font-family: 'Inter', sans-serif;">
+                                <strong style="color: var(--error-red);">🚨 Emergency Location</strong><br>
+                                <strong>Name:</strong> ${currentEmergency.name}<br>
+                                <strong>Vehicle:</strong> ${currentEmergency.vehicle_model}<br>
+                                <strong>Battery:</strong> ${currentEmergency.battery_level}<br>
+                                <strong>Status:</strong> ${currentEmergency.status}
+                            </div>
+                        `);
+
+                    // Add station marker if station coordinates are available
+                    if (currentEmergency.station.latitude && currentEmergency.station.longitude) {
+                        const stationIcon = L.divIcon({
+                            className: 'station-marker',
+                            html: '<i class="fas fa-charging-station" style="color: var(--neon-blue); font-size: 18px;"></i>',
+                            iconSize: [24, 24],
+                            iconAnchor: [12, 12]
+                        });
+
+                        const stationMarker = L.marker(
+                            [currentEmergency.station.latitude, currentEmergency.station.longitude],
+                            { icon: stationIcon }
+                        ).addTo(map)
+                        .bindPopup(`
+                            <div style="font-family: 'Inter', sans-serif;">
+                                <strong style="color: var(--neon-blue);">⚡ Charging Station</strong><br>
+                                <strong>Name:</strong> ${currentEmergency.station.name}<br>
+                                <strong>ID:</strong> ${currentEmergency.station.id}
+                            </div>
+                        `);
+
+                        // Fit bounds to show both markers
+                        const bounds = L.latLngBounds([
+                            [lat, lng],
+                            [currentEmergency.station.latitude, currentEmergency.station.longitude]
+                        ]);
+                        map.fitBounds(bounds, { padding: [50, 50] });
+                    } else {
+                        emergencyMarker.openPopup();
+                    }
+
+                    // Hide loading
+                    mapLoading.style.display = 'none';
+
+                    // Force map resize
+                    setTimeout(() => map.invalidateSize(), 100);
+
+                } catch (error) {
+                    console.error('Error initializing map:', error);
+                    mapLoading.innerHTML = `
+                        <div style="text-align: center;">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--error-red); font-size: 2rem;"></i>
+                            <p>Unable to load map</p>
+                        </div>
+                    `;
+                }
+            }, 100);
+        }
+
+        // Initialize emergency bookings table
+        function renderEmergencyBookings(filteredBookings = emergencyBookings) {
+            emergencyTableBody.innerHTML = '';
+
+            if (filteredBookings.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            filteredBookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.dataset.id = booking.id;
+
+                // Get status badge class
+                const statusClass = `status-${booking.status.toLowerCase().replace(' ', '-')}`;
+
+                row.innerHTML = `
+                    <td>
+                        <div class="user-cell">
+                            <span class="user-name">${booking.name}</span>
+                            <span class="user-contact">${booking.email}</span>
+                            <span class="user-contact">${booking.phone}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div>${booking.vehicle_model}</div>
+                        <div style="color: ${getBatteryColor(booking.battery_level)}; font-size: 0.85rem;">
+                            <i class="fas fa-battery-quarter"></i> ${booking.battery_level}
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-size: 0.9rem;">${booking.location}</div>
+                        <div style="color: #7a819c; font-size: 0.8rem;">
+                            <i class="fas fa-map-pin"></i> ${booking.latitude.toFixed(4)}, ${booking.longitude.toFixed(4)}
+                        </div>
+                    </td>
+                    <td>
+                        <div>${booking.station.name}</div>
+                        <div style="color: #7a819c; font-size: 0.8rem;">ID: ${booking.station.id}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600; color: var(--neon-blue);">₹${booking.price.toFixed(2)}</div>
+                    </td>
+                    <td>
+                        <span class="status-badge ${statusClass}">${booking.status}</span>
+                    </td>
+                    <td>
+                        <div>${formatDate(booking.created_at)}</div>
+                        <div style="color: #7a819c; font-size: 0.8rem;">
+                            ${getTimeAgo(booking.created_at)}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view-btn" onclick="viewEmergency(${booking.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            ${booking.status === 'Booked' ? `
+                            <button class="action-btn dispatch-btn" onclick="dispatchEmergency(${booking.id})">
+                                <i class="fas fa-paper-plane"></i> Dispatch
+                            </button>
+                            ` : ''}
+                            ${booking.status === 'Dispatched' ? `
+                            <button class="action-btn dispatch-btn" onclick="inProgressEmergency(${booking.id})">
+                                <i class="fas fa-paper-plane"></i> In Progress
+                            </button>
+                            ` : ''}
+                            ${booking.status === 'In Progress' ? `
+                            <button class="action-btn complete-btn" onclick="completeEmergency(${booking.id})">
+                                <i class="fas fa-check"></i> Complete
+                            </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                `;
+
+                emergencyTableBody.appendChild(row);
+            });
+
+            updateCounts();
+        }
+
+        // Get battery color based on level
+        function getBatteryColor(level) {
+            const percent = parseInt(level);
+            if (percent <= 10) return 'var(--error-red)';
+            if (percent <= 25) return 'var(--warning-yellow)';
+            return 'var(--success-green)';
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Get time ago
+        function getTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+            if (diffHours < 1) return 'Just now';
+            if (diffHours < 24) return `${diffHours} hours ago`;
+
+            const diffDays = Math.floor(diffHours / 24);
+            return `${diffDays} days ago`;
+        }
+
+        // View emergency details
+        function viewEmergency(id) {
+            currentEmergency = emergencyBookings.find(booking => booking.id === id);
+
+            if (!currentEmergency) return;
+
+            // Update modal content
+            document.getElementById('modalUserName').textContent = currentEmergency.name;
+            document.getElementById('modalUserEmail').textContent = currentEmergency.email;
+            document.getElementById('modalUserPhone').textContent = currentEmergency.phone;
+            document.getElementById('modalVehicleModel').textContent = currentEmergency.vehicle_model;
+            document.getElementById('modalBatteryLevel').textContent = currentEmergency.battery_level;
+            document.getElementById('modalLocation').textContent = currentEmergency.location;
+            document.getElementById('modalCoordinates').textContent =
+                `${currentEmergency.latitude.toFixed(4)}, ${currentEmergency.longitude.toFixed(4)}`;
+            document.getElementById('modalStation').textContent = currentEmergency.station.name;
+            document.getElementById('modalPrice').textContent = currentEmergency.price.toFixed(2);
+            document.getElementById('modalCreatedAt').textContent = formatDate(currentEmergency.created_at);
+            document.getElementById('modalBookingId').textContent = `EMG-${currentEmergency.id.toString().padStart(4, '0')}`;
+            document.getElementById('modalDetails').textContent = currentEmergency.details || 'No additional details provided.';
+
+            // Update status
+            const statusElement = document.getElementById('modalStatus');
+            statusElement.textContent = currentEmergency.status;
+            statusElement.className = '';
+            statusElement.classList.add('status-badge', `status-${currentEmergency.status.toLowerCase().replace(' ', '-')}`);
+            console.log(currentEmergency.status);
+            // Show/hide action buttons based on status
+            dispatchBtn.style.display = currentEmergency.status === 'Booked' ? 'flex' : 'none';
+            progressBtn.style.display = currentEmergency.status === 'Dispatched' ? 'flex' : 'none';
+            completeBtn.style.display = currentEmergency.status === 'In Progress' ? 'flex' : 'none';
+
+            // Initialize map with emergency location
+            if (currentEmergency.latitude && currentEmergency.longitude) {
+                initMap(currentEmergency.latitude, currentEmergency.longitude);
+            }
+
+            emergencyModal.classList.add('active');
+        }
+
+        // Dispatch emergency
+        function dispatchEmergency(id) {
+        window.location.href=`/manage-emergency-bookings/${id}/Dispatched/`;
+            const booking = emergencyBookings.find(b => b.id === id);
+            if (booking) {
+                booking.status = 'Dispatched';
+                renderEmergencyBookings();
+                showNotification(`Emergency #${id} has been dispatched`, 'success');
+                if (currentEmergency && currentEmergency.id === id) {
+                    viewEmergency(id); // Refresh modal
+                }
+            }
+        }
+
+        function inProgressEmergency(id) {
+        window.location.href=`/manage-emergency-bookings/${id}/In Progress/`;
+            const booking = emergencyBookings.find(b => b.id === id);
+            if (booking) {
+                booking.status = 'Dispatched';
+                renderEmergencyBookings();
+                showNotification(`Emergency #${id} has been dispatched`, 'success');
+                if (currentEmergency && currentEmergency.id === id) {
+                    viewEmergency(id); // Refresh modal
+                }
+            }
+        }
+
+        // Complete emergency
+        function completeEmergency(id) {
+            window.location.href=`/manage-emergency-bookings/${id}/Completed/`;
+            const booking = emergencyBookings.find(b => b.id === id);
+            if (booking) {
+                booking.status = 'Completed';
+                renderEmergencyBookings();
+                showNotification(`Emergency #${id} marked as completed`, 'success');
+                if (currentEmergency && currentEmergency.id === id) {
+                    viewEmergency(id); // Refresh modal
+                }
+            }
+        }
+
+        // Filter emergency bookings
+        function filterEmergencyBookings() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const status = statusFilter.value;
+            const station = stationFilter.value;
+
+            const filtered = emergencyBookings.filter(booking => {
+                // Search filter
+                const matchesSearch = searchTerm === '' ||
+                    booking.name.toLowerCase().includes(searchTerm) ||
+                    booking.vehicle_model.toLowerCase().includes(searchTerm) ||
+                    booking.location.toLowerCase().includes(searchTerm) ||
+                    booking.email.toLowerCase().includes(searchTerm);
+
+                // Status filter
+                const matchesStatus = status === 'all' || booking.status === status;
+
+                // Station filter
+                const matchesStation = station === 'all' || booking.station.name === station;
+
+                return matchesSearch && matchesStatus && matchesStation;
+            });
+
+            renderEmergencyBookings(filtered);
+        }
+
+        // Update counts
+        function updateCounts() {
+            const activeEmergencies = emergencyBookings.filter(b =>
+                b.status === 'Booked' || b.status === 'Dispatched' || b.status === 'In Progress'
+            ).length;
+
+            document.getElementById('urgentNotifications').textContent =
+                emergencyBookings.filter(b => b.status === 'Booked').length;
+        }
+
+        // Populate station filter
+        function populateStationFilter() {
+            stationFilter.innerHTML = '<option value="all">All Stations</option>';
+            stations.forEach(station => {
+                const option = document.createElement('option');
+                option.value = station;
+                option.textContent = station;
+                stationFilter.appendChild(option);
+            });
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'success' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 71, 87, 0.1)'};
+                border: 1px solid ${type === 'success' ? 'var(--success-green)' : 'var(--error-red)'};
+                color: ${type === 'success' ? 'var(--success-green)' : 'var(--error-red)'};
+                border-radius: 10px;
+                z-index: 3000;
+                backdrop-filter: blur(10px);
+                animation: slideIn 0.3s ease;
+            `;
+
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Event Listeners
+        mobileMenuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                ? '<i class="fas fa-times"></i>'
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        closeEmergencyModal.addEventListener('click', () => {
+            emergencyModal.classList.remove('active');
+            if (map) {
+                map.remove();
+                map = null;
+            }
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            emergencyModal.classList.remove('active');
+            if (map) {
+                map.remove();
+                map = null;
+            }
+        });
+
+        emergencyModal.addEventListener('click', (e) => {
+            if (e.target === emergencyModal) {
+                emergencyModal.classList.remove('active');
+                if (map) {
+                    map.remove();
+                    map = null;
+                }
+            }
+        });
+
+        searchInput.addEventListener('input', filterEmergencyBookings);
+        statusFilter.addEventListener('change', filterEmergencyBookings);
+        stationFilter.addEventListener('change', filterEmergencyBookings);
+
+        refreshBtn.addEventListener('click', () => {
+            refreshBtn.innerHTML = '<span class="loading"></span> Refreshing...';
+            setTimeout(() => {
+                renderEmergencyBookings();
+                refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                showNotification('Emergency bookings refreshed', 'success');
+            }, 1000);
+        });
+
+        dispatchBtn.addEventListener('click', () => {
+            if (currentEmergency) {
+                dispatchEmergency(currentEmergency.id);
+            }
+        });
+
+        progressBtn.addEventListener('click', () => {
+            if (currentEmergency) {
+                inProgressEmergency(currentEmergency.id);
+            }
+        });
+
+        completeBtn.addEventListener('click', () => {
+            if (currentEmergency) {
+                completeEmergency(currentEmergency.id);
+            }
+        });
+
+        // Initialize
+        renderEmergencyBookings();
+        populateStationFilter();
+        updateCounts();
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl + F to focus search
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+
+            // Esc to close modal
+            if (e.key === 'Escape' && emergencyModal.classList.contains('active')) {
+                emergencyModal.classList.remove('active');
+                if (map) {
+                    map.remove();
+                    map = null;
+                }
+            }
+
+            // F5 to refresh
+            if (e.key === 'F5') {
+                e.preventDefault();
+                refreshBtn.click();
+            }
+        });
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Randomly update emergency status
+            const activeEmergencies = emergencyBookings.filter(b =>
+                b.status === 'Booked' || b.status === 'Dispatched'
+            );
+
+            if (activeEmergencies.length > 0 && Math.random() > 0.7) {
+                const randomEmergency = activeEmergencies[Math.floor(Math.random() * activeEmergencies.length)];
+
+                if (randomEmergency.status === 'Booked' && Math.random() > 0.5) {
+                    randomEmergency.status = 'Dispatched';
+                } else if (randomEmergency.status === 'Dispatched' && Math.random() > 0.5) {
+                    randomEmergency.status = 'In Progress';
+                }
+
+                renderEmergencyBookings();
+                updateCounts();
+            }
+        }, 30000);
+
+        // Initialize map when modal opens
+        emergencyModal.addEventListener('animationend', (e) => {
+            if (emergencyModal.classList.contains('active') && currentEmergency) {
+                // Small delay to ensure DOM is ready
+                setTimeout(() => {
+                    if (currentEmergency.latitude && currentEmergency.longitude) {
+                        initMap(currentEmergency.latitude, currentEmergency.longitude);
+                    }
+                }, 300);
+            }
+        });
+    </script>
+</body>
+</html>

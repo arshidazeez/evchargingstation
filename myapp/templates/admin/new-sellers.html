@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Approvals | VoltVault Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --electric-purple: #b967ff;
+            --cyber-blue: #0066ff;
+            --dark-space: #0a0e17;
+            --space-gray: #1a1f2e;
+            --light-space: #2a3042;
+            --pure-white: #ffffff;
+            --success-green: #00ff88;
+            --error-red: #ff4757;
+            --warning-yellow: #ffcc00;
+            --info-blue: #3498db;
+            --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            --purple-glow: 0 0 25px rgba(185, 103, 255, 0.4);
+            --gradient-1: linear-gradient(135deg, #0066ff 0%, #00f3ff 50%, #b967ff 100%);
+            --gradient-2: linear-gradient(45deg, #b967ff 0%, #0066ff 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--pure-white);
+            background-color: var(--dark-space);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(0, 102, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(185, 103, 255, 0.08) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(26, 31, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 243, 255, 0.1);
+            padding: 25px 0;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--neon-blue);
+            font-size: 2rem;
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            color: #b0b7d0;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--pure-white);
+            padding-left: 30px;
+        }
+
+        .nav-link.active {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            font-weight: 600;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--neon-blue);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--electric-purple);
+            color: var(--pure-white);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 12px 20px 12px 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 10px;
+            color: var(--pure-white);
+            font-size: 0.9rem;
+            width: 250px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #b0b7d0;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow-shadow);
+            border-color: var(--neon-blue);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-label {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+        }
+
+        /* Filters Bar */
+        .filters-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 10px;
+            color: #b0b7d0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--pure-white);
+        }
+
+        .filter-btn.active {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            border-color: transparent;
+        }
+
+        .date-filter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-input {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 10px;
+            color: var(--pure-white);
+            font-size: 0.9rem;
+            min-width: 150px;
+        }
+
+        /* Sellers Table */
+        .sellers-table-container {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 25px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .table-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .sellers-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .sellers-table thead {
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        .sellers-table th {
+            padding: 18px 20px;
+            text-align: left;
+            color: var(--neon-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .sellers-table td {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.05);
+            font-size: 0.95rem;
+        }
+
+        .sellers-table tr:hover {
+            background: rgba(0, 243, 255, 0.03);
+        }
+
+        .seller-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--neon-blue);
+        }
+
+        .seller-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .seller-details h4 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .seller-details p {
+            color: #b0b7d0;
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--warning-yellow);
+        }
+
+        .status-approved {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success-green);
+        }
+
+        .status-rejected {
+            background: rgba(255, 71, 87, 0.1);
+            color: var(--error-red);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-approve {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: var(--success-green);
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-approve:hover {
+            background: var(--success-green);
+            color: var(--dark-space);
+        }
+
+        .btn-reject {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            color: var(--error-red);
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-reject:hover {
+            background: var(--error-red);
+            color: var(--pure-white);
+        }
+
+        .btn-view {
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            color: var(--neon-blue);
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-view:hover {
+            background: var(--neon-blue);
+            color: var(--dark-space);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            gap: 10px;
+        }
+
+        .pagination-btn {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 8px;
+            color: #b0b7d0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .pagination-btn:hover {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--pure-white);
+        }
+
+        .pagination-btn.active {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            border-color: transparent;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 23, 0.95);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(26, 31, 46, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            box-shadow: var(--glow-shadow);
+            backdrop-filter: blur(10px);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #b0b7d0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--neon-blue);
+        }
+
+        .seller-profile {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--neon-blue);
+            margin-bottom: 20px;
+        }
+
+        .seller-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .detail-item h4 {
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .detail-item p {
+            color: var(--pure-white);
+            font-size: 1rem;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .modal-actions button {
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-modal-approve {
+            background: var(--success-green);
+            color: var(--dark-space);
+        }
+
+        .btn-modal-approve:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-modal-reject {
+            background: var(--error-red);
+            color: var(--pure-white);
+        }
+
+        .btn-modal-reject:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .seller-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: var(--gradient-1);
+                color: var(--dark-space);
+                border: none;
+                padding: 10px 15px;
+                border-radius: 10px;
+                font-size: 1.2rem;
+                cursor: pointer;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-bar {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                flex-wrap: wrap;
+            }
+
+            .sellers-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 20px 15px;
+            }
+
+            .modal-content {
+                padding: 25px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .modal-actions button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-blue);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--electric-purple);
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--neon-blue);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/adminp/" class="logo">
+                <i class="fas fa-bolt logo-icon"></i>
+                <span>VoltVault</span>
+                <span class="admin-badge">ADMIN</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="/adminp/" class="nav-link" data-section="dashboard">
+                        <i class="fas fa-home nav-icon"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/new-managers/" class="nav-link">
+                        <i class="fas fa-users nav-icon"></i>
+                        New Managers
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="/managers/" class="nav-link">
+                        <i class="fas fa-users nav-icon"></i>
+                        Managers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/new-sellers/" class="nav-link active" data-section="users">
+                        <i class="fas fa-users nav-icon"></i>
+                        New Sellers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/sellers/" class="nav-link" data-section="users">
+                        <i class="fas fa-users nav-icon"></i>
+                        Sellers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/users/" class="nav-link" data-section="users">
+                        <i class="fas fa-users nav-icon"></i>
+                        Users
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link" data-section="settings">
+                        <i class="fas fa-cog nav-icon"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Seller Approvals</h1>
+                <p>Review and manage new seller applications</p>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search sellers...">
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card animate-fadeIn">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value" id="pendingStat">12</div>
+                <div class="stat-label">Pending Approval</div>
+            </div>
+
+            <div class="stat-card animate-fadeIn" style="animation-delay: 0.1s;">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-value" id="approvedStat">48</div>
+                <div class="stat-label">Approved Sellers</div>
+            </div>
+
+            <div class="stat-card animate-fadeIn" style="animation-delay: 0.2s;">
+                <div class="stat-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-value" id="rejectedStat">5</div>
+                <div class="stat-label">Rejected Sellers</div>
+            </div>
+
+            <div class="stat-card animate-fadeIn" style="animation-delay: 0.3s;">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-value" id="todayStat">3</div>
+                <div class="stat-label">New Today</div>
+            </div>
+        </div>
+
+        <!-- Filters Bar -->
+        <div class="filters-bar">
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-list"></i> All Sellers
+                </button>
+                <button class="filter-btn" data-filter="pending">
+                    <i class="fas fa-clock"></i> Pending
+                </button>
+                <button class="filter-btn" data-filter="approved">
+                    <i class="fas fa-check"></i> Approved
+                </button>
+                <button class="filter-btn" data-filter="rejected">
+                    <i class="fas fa-times"></i> Rejected
+                </button>
+            </div>
+            <div class="date-filter">
+                <input type="date" class="date-input" id="fromDate">
+                <span>to</span>
+                <input type="date" class="date-input" id="toDate">
+                <button class="filter-btn" id="applyDateFilter">
+                    <i class="fas fa-filter"></i> Apply
+                </button>
+            </div>
+        </div>
+
+        <!-- Sellers Table -->
+        <div class="sellers-table-container">
+            <div class="table-header">
+                <h3>Seller Applications</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="sellers-table">
+                    <thead>
+                        <tr>
+                            <th>Seller Info</th>
+                            <th>Business</th>
+                            <th>Location</th>
+                            <th>Registration Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sellersTableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="pagination-btn" id="prevPage">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">2</button>
+                <button class="pagination-btn">3</button>
+                <span style="color: #b0b7d0; padding: 0 10px;">...</span>
+                <button class="pagination-btn">10</button>
+                <button class="pagination-btn" id="nextPage">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Seller Details Modal -->
+    <div class="modal-overlay" id="sellerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Seller Application Details</h2>
+                <button class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="seller-profile">
+                <img src="https://via.placeholder.com/150" alt="Seller" class="profile-image" id="modalImage">
+                <h3 id="modalName">John Doe</h3>
+                <p id="modalEmail" style="color: #b0b7d0;">john@example.com</p>
+            </div>
+
+            <div class="seller-details-grid">
+                <div class="detail-item">
+                    <h4>Phone Number</h4>
+                    <p id="modalPhone">+1 (555) 123-4567</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Business Name</h4>
+                    <p id="modalBusiness">EV Charging Solutions Inc.</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Tax ID</h4>
+                    <p id="modalTax">TAX-123456789</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Registration Date</h4>
+                    <p id="modalDate">2024-01-10</p>
+                </div>
+                <div class="detail-item" style="grid-column: span 2;">
+                    <h4>Address</h4>
+                    <p id="modalAddress">123 Main Street, New York, NY 10001, United States</p>
+                </div>
+                <div class="detail-item">
+                    <h4>City</h4>
+                    <p id="modalCity">New York</p>
+                </div>
+                <div class="detail-item">
+                    <h4>State</h4>
+                    <p id="modalState">NY</p>
+                </div>
+                <div class="detail-item">
+                    <h4>ZIP Code</h4>
+                    <p id="modalZip">10001</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Country</h4>
+                    <p id="modalCountry">United States</p>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 id="confirmTitle">Confirm Approval</h2>
+                <button class="close-modal" onclick="closeConfirmModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="text-align: center; padding: 30px 0;">
+                <i class="fas fa-question-circle" style="font-size: 4rem; color: var(--neon-blue); margin-bottom: 20px;"></i>
+                <p id="confirmMessage" style="font-size: 1.1rem; line-height: 1.6; color: #b0b7d0;">
+                    Are you sure you want to approve this seller?
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal-approve" id="confirmActionBtn">
+                    <i class="fas fa-check"></i> Yes, Confirm
+                </button>
+                <button class="btn-modal-reject" onclick="closeConfirmModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample seller data matching your Django model
+        const sellers = [
+          {% for i in sellers %}
+            {
+                id: {{i.id}},
+                name: "{{i.name}}",
+                email: "{{i.email}}",
+                phone: "{{i.phone}}",
+                business_name: "{{i.business_name}}",
+                tax: "{{i.tax}}",
+                address: "{{i.address}}",
+                city: "{{i.city}}",
+                state: "{{i.state}}",
+                zip: {{i.zip}},
+                country: "{{i.country}}",
+                image: "{{i.image.url}}",
+                date: "{{i.date}}",
+                status: "pending",
+                rights: "New Seller"
+            },
+          {% endfor %}
+        ];
+
+        // Current state
+        let currentSellerId = null;
+        let currentFilter = 'all';
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const searchInput = document.getElementById('searchInput');
+        const sellersTableBody = document.getElementById('sellersTableBody');
+        const sellerModal = document.getElementById('sellerModal');
+        const confirmModal = document.getElementById('confirmModal');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const applyDateFilterBtn = document.getElementById('applyDateFilter');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+    loadSellers();
+    initializeDashboard();
+    updateStats();
+
+    // Set default dates SAFELY
+
+});
+
+
+        function initializeDashboard() {
+            // Mobile menu toggle
+            mobileMenuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                    ? '<i class="fas fa-times"></i>'
+                    : '<i class="fas fa-bars"></i>';
+            });
+
+            // Filter buttons
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    loadSellers();
+                });
+            });
+
+            // Search functionality
+            searchInput.addEventListener('input', debounce(handleSearch, 300));
+
+            // Date filter
+            applyDateFilterBtn.addEventListener('click', () => {
+                const fromDate = document.getElementById('fromDate').value;
+                const toDate = document.getElementById('toDate').value;
+                loadSellers();
+            });
+
+            // Close modal when clicking outside
+            sellerModal.addEventListener('click', (e) => {
+                if (e.target === sellerModal) {
+                    closeModal();
+                }
+            });
+
+            confirmModal.addEventListener('click', (e) => {
+                if (e.target === confirmModal) {
+                    closeConfirmModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    closeConfirmModal();
+                }
+            });
+        }
+
+        function loadSellers() {
+            let filteredSellers = [...sellers];
+
+            // Apply filter
+            if (currentFilter !== 'all') {
+                filteredSellers = filteredSellers.filter(seller => seller.status === currentFilter);
+            }
+
+            // Apply search
+            const searchTerm = searchInput.value.toLowerCase();
+            if (searchTerm) {
+                filteredSellers = filteredSellers.filter(seller =>
+                    seller.name.toLowerCase().includes(searchTerm) ||
+                    seller.email.toLowerCase().includes(searchTerm) ||
+                    seller.business_name.toLowerCase().includes(searchTerm) ||
+                    seller.city.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Apply date filter
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            if (fromDate) {
+                filteredSellers = filteredSellers.filter(seller => seller.date >= fromDate);
+            }
+            if (toDate) {
+                filteredSellers = filteredSellers.filter(seller => seller.date <= toDate);
+            }
+
+            // Clear table
+            sellersTableBody.innerHTML = '';
+
+            // Populate table
+            filteredSellers.forEach(seller => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="seller-info">
+                            <img src="${seller.image}" alt="${seller.name}" class="seller-avatar">
+                            <div class="seller-details">
+                                <h4>${seller.name}</h4>
+                                <p>${seller.email}</p>
+                                <p style="font-size: 0.8rem; color: var(--neon-blue);">ID: SELL-${seller.id.toString().padStart(4, '0')}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <strong>${seller.business_name}</strong><br>
+                        <small style="color: #b0b7d0;">Tax ID: ${seller.tax}</small>
+                    </td>
+                    <td>
+                        ${seller.city}, ${seller.state}<br>
+                        <small style="color: #b0b7d0;">${seller.country}</small>
+                    </td>
+                    <td>${formatDate(seller.date)}</td>
+                    <td>
+                        <span class="status-badge status-${seller.status}">
+                            ${seller.status.charAt(0).toUpperCase() + seller.status.slice(1)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-view" onclick="viewSeller(${seller.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            ${seller.status === 'pending' ? `
+                                <button class="btn-approve" onclick="approveSeller(${seller.id})">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                                <button class="btn-reject" onclick="rejectSeller(${seller.id})">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                `;
+                sellersTableBody.appendChild(row);
+            });
+
+            // Update pagination
+            updatePagination(filteredSellers.length);
+        }
+
+        function updateStats() {
+            const pending = sellers.filter(s => s.status === 'pending').length;
+            const approved = sellers.filter(s => s.status === 'approved').length;
+            const rejected = sellers.filter(s => s.status === 'rejected').length;
+            const today = sellers.filter(s => s.date === new Date().toISOString().split('T')[0]).length;
+
+            document.getElementById('pendingStat').textContent = pending;
+            document.getElementById('approvedStat').textContent = approved;
+            document.getElementById('rejectedStat').textContent = rejected;
+            document.getElementById('todayStat').textContent = today;
+            document.getElementById('pendingCount').textContent = pending;
+        }
+
+        function viewSeller(id) {
+            const seller = sellers.find(s => s.id === id);
+            if (!seller) return;
+
+            currentSellerId = id;
+
+            // Populate modal with seller data
+            document.getElementById('modalImage').src = seller.image;
+            document.getElementById('modalName').textContent = seller.name;
+            document.getElementById('modalEmail').textContent = seller.email;
+            document.getElementById('modalPhone').textContent = formatPhone(seller.phone);
+            document.getElementById('modalBusiness').textContent = seller.business_name;
+            document.getElementById('modalTax').textContent = seller.tax;
+            document.getElementById('modalAddress').textContent = `${seller.address}, ${seller.city}, ${seller.state} ${seller.zip}, ${seller.country}`;
+            document.getElementById('modalCity').textContent = seller.city;
+            document.getElementById('modalState').textContent = seller.state;
+            document.getElementById('modalZip').textContent = seller.zip;
+            document.getElementById('modalCountry').textContent = seller.country;
+            document.getElementById('modalDate').textContent = formatDate(seller.date);
+
+            // Show modal
+            sellerModal.classList.add('active');
+        }
+
+        function approveSeller(id) {
+            currentSellerId = id;
+            const seller = sellers.find(s => s.id === id);
+
+            document.getElementById('confirmTitle').textContent = 'Approve Seller';
+            document.getElementById('confirmMessage').innerHTML = `
+                Are you sure you want to approve <strong>${seller.name}</strong>?<br>
+                This will grant them full seller access to the platform.
+            `;
+            document.getElementById('confirmActionBtn').innerHTML = '<i class="fas fa-check"></i> Yes, Approve';
+            document.getElementById('confirmActionBtn').onclick = () => confirmApprove();
+
+            confirmModal.classList.add('active');
+        }
+
+        function rejectSeller(id) {
+            currentSellerId = id;
+            const seller = sellers.find(s => s.id === id);
+
+            document.getElementById('confirmTitle').textContent = 'Reject Application';
+            document.getElementById('confirmMessage').innerHTML = `
+                Are you sure you want to reject <strong>${seller.name}</strong>'s application?<br>
+                This action cannot be undone.
+            `;
+            document.getElementById('confirmActionBtn').innerHTML = '<i class="fas fa-times"></i> Yes, Reject';
+            document.getElementById('confirmActionBtn').onclick = () => confirmReject();
+
+            confirmModal.classList.add('active');
+        }
+
+        function confirmApprove() {
+            const sellerIndex = sellers.findIndex(s => s.id === currentSellerId);
+            window.location.href=`/manage-seller/${currentSellerId}/Seller/`;
+            if (sellerIndex !== -1) {
+                sellers[sellerIndex].status = 'approved';
+                sellers[sellerIndex].rights = 'Approved Seller';
+
+                // Show success message
+                showNotification(`Seller "${sellers[sellerIndex].name}" has been approved!`, 'success');
+
+                // Reload data
+                loadSellers();
+                updateStats();
+                closeConfirmModal();
+                closeModal();
+            }
+        }
+
+        function confirmReject() {
+            const sellerIndex = sellers.findIndex(s => s.id === currentSellerId);
+            window.location.href=`/manage-seller/${currentSellerId}/Rejected/`;
+            if (sellerIndex !== -1) {
+                sellers[sellerIndex].status = 'rejected';
+                sellers[sellerIndex].rights = 'Rejected Seller';
+
+                // Show success message
+                showNotification(`Seller "${sellers[sellerIndex].name}" has been rejected.`, 'error');
+
+                // Reload data
+                loadSellers();
+                updateStats();
+                closeConfirmModal();
+                closeModal();
+            }
+        }
+
+        function closeModal() {
+            sellerModal.classList.remove('active');
+        }
+
+        function closeConfirmModal() {
+            confirmModal.classList.remove('active');
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function formatPhone(phone) {
+            const cleaned = phone.toString().replace(/\D/g, '');
+            const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+            if (match) {
+                return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+            }
+            return phone;
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function handleSearch() {
+            loadSellers();
+        }
+
+        function updatePagination(totalItems) {
+            // Update pagination UI
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            // In a real app, you would implement pagination logic here
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: ${type === 'success' ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 71, 87, 0.1)'};
+                border: 1px solid ${type === 'success' ? 'var(--success-green)' : 'var(--error-red)'};
+                color: ${type === 'success' ? 'var(--success-green)' : 'var(--error-red)'};
+                border-radius: 10px;
+                z-index: 3000;
+                backdrop-filter: blur(10px);
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+            `;
+
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Set default dates
+    </script>
+</body>
+</html>

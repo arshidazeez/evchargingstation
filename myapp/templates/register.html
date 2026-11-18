@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | VoltVault - Premium EV Charging</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --electric-purple: #b967ff;
+            --cyber-blue: #0066ff;
+            --dark-space: #0a0e17;
+            --space-gray: #1a1f2e;
+            --light-space: #2a3042;
+            --pure-white: #ffffff;
+            --success-green: #00ff88;
+            --error-red: #ff4757;
+            --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            --purple-glow: 0 0 25px rgba(185, 103, 255, 0.4);
+            --gradient-1: linear-gradient(135deg, #0066ff 0%, #00f3ff 50%, #b967ff 100%);
+            --gradient-2: linear-gradient(45deg, #b967ff 0%, #0066ff 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--pure-white);
+            background-color: var(--dark-space);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(185, 103, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 0.05) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .floating-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .float-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            animation: float 20s infinite linear;
+        }
+
+        .float-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--neon-blue);
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .float-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--electric-purple);
+            bottom: 15%;
+            left: 10%;
+            animation-delay: 5s;
+        }
+
+        .float-3 {
+            width: 150px;
+            height: 150px;
+            background: var(--cyber-blue);
+            top: 50%;
+            right: 20%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -50px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            z-index: 10;
+        }
+
+        .logo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--neon-blue);
+            font-size: 2.5rem;
+            text-shadow: 0 0 15px var(--neon-blue);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .logo-tagline {
+            color: #b0b7d0;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .registration-card {
+            background: rgba(26, 31, 46, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            box-shadow: var(--glow-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .registration-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-1);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .card-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .card-header p {
+            color: #b0b7d0;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            color: #b0b7d0;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: var(--neon-blue);
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--pure-white);
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--neon-blue);
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .form-input:focus + .input-icon {
+            color: var(--electric-purple);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #b0b7d0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: var(--neon-blue);
+        }
+
+        .input-hint {
+            font-size: 0.85rem;
+            color: #7a819c;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .location-group {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .btn-location {
+            padding: 16px 20px;
+            background: var(--gradient-2);
+            border: none;
+            border-radius: 12px;
+            color: var(--dark-space);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 54px;
+        }
+
+        .btn-location:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .btn-location:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-location i {
+            font-size: 1.2rem;
+        }
+
+        .location-coordinates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .location-coordinates .input-wrapper {
+            position: relative;
+        }
+
+        .location-coordinates .form-input {
+            padding: 16px 20px 16px 50px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .location-coordinates .input-icon {
+            color: var(--success-green);
+        }
+
+        .location-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .location-status.success {
+            color: var(--success-green);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .location-status.error {
+            color: var(--error-red);
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .location-status i {
+            font-size: 1rem;
+        }
+
+        .terms-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .checkbox-container {
+            position: relative;
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-container input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 22px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            border-radius: 5px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox-container input:checked ~ .checkmark {
+            background: var(--gradient-1);
+            border-color: transparent;
+        }
+
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            display: none;
+            width: 5px;
+            height: 10px;
+            border: solid var(--dark-space);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-top: -2px;
+        }
+
+        .checkbox-container input:checked ~ .checkmark::after {
+            display: block;
+        }
+
+        .terms-text {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .terms-text a {
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .terms-text a:hover {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Space Grotesk', sans-serif;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: #7a819c;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            padding: 0 15px;
+            font-size: 0.9rem;
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            border-radius: 12px;
+            color: #b0b7d0;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--neon-blue);
+            color: var(--pure-white);
+            transform: translateY(-2px);
+        }
+
+        .social-btn.google:hover {
+            color: #ea4335;
+        }
+
+        .social-btn.apple:hover {
+            color: #ffffff;
+        }
+
+        .social-btn.facebook:hover {
+            color: #1877f2;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 30px;
+            color: #b0b7d0;
+            font-size: 0.95rem;
+        }
+
+        .login-link a {
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .login-link a:hover {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+
+        .progress-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: 600;
+            color: #b0b7d0;
+            transition: all 0.3s;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: #7a819c;
+            transition: all 0.3s;
+        }
+
+        .progress-step.active .step-number {
+            background: var(--gradient-1);
+            border-color: transparent;
+            color: var(--dark-space);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .progress-step.active .step-label {
+            color: var(--neon-blue);
+            font-weight: 600;
+        }
+
+        .progress-step.completed .step-number {
+            background: var(--success-green);
+            border-color: transparent;
+            color: var(--dark-space);
+        }
+
+        .progress-step.completed .step-number::after {
+            content: '✓';
+        }
+
+        /* Form validation styles */
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.85rem;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s;
+        }
+
+        .error-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .form-input.error {
+            border-color: var(--error-red);
+        }
+
+        .form-input.success {
+            border-color: var(--success-green);
+        }
+
+        /* Responsive design */
+        @media (max-width: 576px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .registration-card {
+                padding: 30px 25px;
+            }
+
+            .card-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .progress-step .step-label {
+                font-size: 0.75rem;
+            }
+
+            .location-group {
+                grid-template-columns: 1fr;
+            }
+
+            .location-coordinates {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .registration-card {
+                padding: 25px 20px;
+            }
+
+            .card-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .logo-icon {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating background elements -->
+    <div class="floating-elements">
+        <div class="float-circle float-1"></div>
+        <div class="float-circle float-2"></div>
+        <div class="float-circle float-3"></div>
+    </div>
+
+    <div class="container animate__animated animate__fadeIn">
+        <!-- Logo and Header -->
+        <div class="logo-header">
+            <a href="#" class="logo">
+                <i class="fas fa-bolt logo-icon"></i>
+                <span>VoltVault</span>
+            </a>
+            <p class="logo-tagline">Join the premium EV charging revolution</p>
+        </div>
+
+        <!-- Registration Card -->
+        <div class="registration-card">
+            <!-- Multi-step progress bar -->
+            <div class="progress-bar">
+                <div class="progress-step active">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Account</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Location</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Plan</div>
+                </div>
+            </div>
+
+            <!-- Card Header -->
+            <div class="card-header">
+                <h1>Create Your Account</h1>
+                <p>We'll use your location to show nearby charging stations</p>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registrationForm" method="post">
+                {% csrf_token %}
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label class="form-label" for="fullName">
+                        <i class="fas fa-user"></i> Full Name
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="fullName" class="form-input" name="name" placeholder="Enter your full name" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    <div class="error-message" id="nameError">
+                        <i class="fas fa-exclamation-circle"></i> Please enter your full name
+                    </div>
+                </div>
+
+                <!-- Email Address -->
+                <div class="form-group">
+                    <label class="form-label" for="email">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" class="form-input" name="email" placeholder="you@example.com" required>
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                    <div class="error-message" id="emailError">
+                        <i class="fas fa-exclamation-circle"></i> Please enter a valid email address
+                    </div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label class="form-label" for="phone">
+                        <i class="fas fa-phone"></i> Phone Number
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="phone" class="form-input" name="phone" placeholder="+1 (555) 123-4567">
+                        <i class="fas fa-phone input-icon"></i>
+                    </div>
+                    <span class="input-hint">Optional - for booking notifications</span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label class="form-label" for="password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" class="form-input" placeholder="Create a strong password" required>
+                        <i class="fas fa-lock input-icon"></i>
+                        <button type="button" class="password-toggle" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="error-message" id="passwordError">
+                        <i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters
+                    </div>
+                    <span class="input-hint">Minimum 8 characters with letters and numbers</span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">
+                        <i class="fas fa-lock"></i> Confirm Password
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter your password" required>
+                        <i class="fas fa-lock input-icon"></i>
+                        <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="error-message" id="confirmPasswordError">
+                        <i class="fas fa-exclamation-circle"></i> Passwords do not match
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="form-group">
+                    <label class="form-label" for="address">
+                        <i class="fas fa-home"></i> Address
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" id="address" class="form-input" name="address" placeholder="Enter your street address" required>
+                        <i class="fas fa-home input-icon"></i>
+                    </div>
+                    <div class="error-message" id="addressError">
+                        <i class="fas fa-exclamation-circle"></i> Please enter your address
+                    </div>
+                </div>
+
+                <!-- City, State, ZIP -->
+                <div class="form-group">
+                    <div class="input-group-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label class="form-label" for="city">
+                                <i class="fas fa-city"></i> City
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="city" name="city" class="form-input" placeholder="City" required>
+                                <i class="fas fa-city input-icon"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label" for="state">
+                                <i class="fas fa-map"></i> State
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="text" id="state" name="state" class="form-input" placeholder="State" required>
+                                <i class="fas fa-map input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <label class="form-label" for="zip">
+                            <i class="fas fa-mail-bulk"></i> ZIP Code
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text" id="zip" name="zip" class="form-input" placeholder="ZIP Code" required>
+                            <i class="fas fa-mail-bulk input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Detection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-map-marker-alt"></i> Your Location
+                    </label>
+                    <div class="location-group">
+                        <div class="input-wrapper">
+                            <input type="text" id="locationInput" class="form-input" placeholder="Click to detect your location" readonly>
+                            <i class="fas fa-crosshairs input-icon"></i>
+                        </div>
+                        <button type="button" class="btn-location" id="detectLocationBtn">
+                            <i class="fas fa-location-crosshairs"></i> Detect
+                        </button>
+                    </div>
+
+                    <div id="locationStatus" class="location-status" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Detecting your location...</span>
+                    </div>
+
+                    <div class="location-coordinates" id="coordinatesContainer" style="display: none;">
+                        <div class="input-wrapper">
+                            <input type="text" id="latitude" name="latitude" class="form-input" placeholder="Latitude" readonly>
+                            <i class="fas fa-globe input-icon"></i>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="text" id="longitude" name="longitude" class="form-input" placeholder="Longitude" readonly>
+                            <i class="fas fa-globe-americas input-icon"></i>
+                        </div>
+                    </div>
+
+                    <span class="input-hint">Your location helps us show nearby EV charging stations</span>
+                    <div class="error-message" id="locationError">
+                        <i class="fas fa-exclamation-circle"></i> Please allow location access to find nearby stations
+                    </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="terms-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="terms" required>
+                        <span class="checkmark"></span>
+                    </div>
+                    <label for="terms" class="terms-text">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I consent to receive communications about my account and promotional offers.
+                    </label>
+                </div>
+
+                <!-- Marketing Opt-in -->
+                <div class="terms-group">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="marketing">
+                        <span class="checkmark"></span>
+                    </div>
+                    <label for="marketing" class="terms-text">
+                        Send me updates about new charging stations, premium features, and special offers.
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-user-plus"></i> Create Premium Account
+                </button>
+
+                <!-- Divider -->
+                <div class="divider">
+                    <span>Or register with</span>
+                </div>
+
+                <!-- Social Login Options -->
+                <div class="social-login">
+                    <button type="button" class="social-btn google">
+                        <i class="fab fa-google"></i>
+                    </button>
+                    <button type="button" class="social-btn apple">
+                        <i class="fab fa-apple"></i>
+                    </button>
+                    <button type="button" class="social-btn facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </button>
+                </div>
+
+                <!-- Login Link -->
+                <div class="login-link">
+                    Already have an account? <a href="/login/">Sign In</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const form = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const togglePassword = document.getElementById('togglePassword');
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const progressSteps = document.querySelectorAll('.progress-step');
+        const detectLocationBtn = document.getElementById('detectLocationBtn');
+        const locationInput = document.getElementById('locationInput');
+        const locationStatus = document.getElementById('locationStatus');
+        const coordinatesContainer = document.getElementById('coordinatesContainer');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        const addressInput = document.getElementById('address');
+        const cityInput = document.getElementById('city');
+        const stateInput = document.getElementById('state');
+        const zipInput = document.getElementById('zip');
+
+        // Error messages elements
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        const addressError = document.getElementById('addressError');
+        const locationError = document.getElementById('locationError');
+
+        // Form inputs
+        const fullNameInput = document.getElementById('fullName');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const termsCheckbox = document.getElementById('terms');
+
+        // User location data
+        let userLocation = {
+            latitude: null,
+            longitude: null,
+            address: null,
+            city: null,
+            state: null,
+            zip: null,
+            detected: false
+        };
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        toggleConfirmPassword.addEventListener('click', function() {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        // Location detection
+        detectLocationBtn.addEventListener('click', detectLocation);
+
+        async function detectLocation() {
+            detectLocationBtn.disabled = true;
+            detectLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
+            locationStatus.style.display = 'flex';
+            locationStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting your location...';
+            locationError.classList.remove('show');
+
+            if (!navigator.geolocation) {
+                showLocationError('Geolocation is not supported by your browser');
+                return;
+            }
+
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    });
+                });
+
+                const { latitude, longitude } = position.coords;
+                userLocation.latitude = latitude;
+                userLocation.longitude = longitude;
+                userLocation.detected = true;
+
+                // Update UI
+                locationInput.value = `Lat: ${latitude.toFixed(6)}, Long: ${longitude.toFixed(6)}`;
+                latitudeInput.value = latitude.toFixed(6);
+                longitudeInput.value = longitude.toFixed(6);
+                coordinatesContainer.style.display = 'grid';
+
+                // Get address from coordinates (reverse geocoding)
+                await getAddressFromCoordinates(latitude, longitude);
+
+                // Update progress to location step
+                progressSteps[0].classList.remove('active');
+                progressSteps[0].classList.add('completed');
+                progressSteps[1].classList.add('active');
+
+                // Show success
+                locationStatus.className = 'location-status success';
+                locationStatus.innerHTML = '<i class="fas fa-check-circle"></i> Location detected successfully!';
+
+                detectLocationBtn.innerHTML = '<i class="fas fa-check"></i> Detected';
+                detectLocationBtn.style.background = 'var(--success-green)';
+
+            } catch (error) {
+                console.error('Geolocation error:', error);
+                let errorMessage = 'Unable to detect location. ';
+
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage += 'Permission denied. Please enable location access.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage += 'Location information unavailable.';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage += 'Location request timed out.';
+                        break;
+                    default:
+                        errorMessage += 'An unknown error occurred.';
+                }
+
+                showLocationError(errorMessage);
+            } finally {
+                setTimeout(() => {
+                    detectLocationBtn.disabled = false;
+                    detectLocationBtn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Detect';
+                    detectLocationBtn.style.background = '';
+                }, 2000);
+            }
+        }
+
+        async function getAddressFromCoordinates(lat, lng) {
+            try {
+                // Using Nominatim (OpenStreetMap) for reverse geocoding
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+                );
+
+                if (!response.ok) throw new Error('Geocoding failed');
+
+                const data = await response.json();
+
+                if (data.address) {
+                    const address = data.address;
+
+                    // Update address fields if they're empty
+                    if (!addressInput.value.trim()) {
+                        addressInput.value = data.display_name.split(',')[0] || '';
+                    }
+
+                    if (!cityInput.value.trim() && address.city) {
+                        cityInput.value = address.city;
+                    } else if (!cityInput.value.trim() && address.town) {
+                        cityInput.value = address.town;
+                    } else if (!cityInput.value.trim() && address.village) {
+                        cityInput.value = address.village;
+                    }
+
+                    if (!stateInput.value.trim() && address.state) {
+                        stateInput.value = address.state;
+                    }
+
+                    if (!zipInput.value.trim() && address.postcode) {
+                        zipInput.value = address.postcode;
+                    }
+
+                    userLocation.address = data.display_name;
+                    userLocation.city = address.city || address.town || address.village;
+                    userLocation.state = address.state;
+                    userLocation.zip = address.postcode;
+                }
+            } catch (error) {
+                console.warn('Reverse geocoding failed:', error);
+                // Continue without address data - coordinates are enough
+            }
+        }
+
+        function showLocationError(message) {
+            locationStatus.className = 'location-status error';
+            locationStatus.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            locationError.textContent = message;
+            locationError.classList.add('show');
+
+            // Update progress to show error state
+            progressSteps[1].classList.remove('active');
+            progressSteps[1].classList.add('error');
+        }
+
+        // Form validation functions
+        function validateName() {
+            const name = fullNameInput.value.trim();
+            const isValid = name.length >= 2;
+
+            if (!isValid && name.length > 0) {
+                fullNameInput.classList.add('error');
+                fullNameInput.classList.remove('success');
+                nameError.classList.add('show');
+                nameError.innerHTML = '<i class="fas fa-exclamation-circle"></i> Name must be at least 2 characters';
+                return false;
+            } else if (isValid) {
+                fullNameInput.classList.remove('error');
+                fullNameInput.classList.add('success');
+                nameError.classList.remove('show');
+                return true;
+            } else {
+                fullNameInput.classList.remove('error', 'success');
+                nameError.classList.remove('show');
+                return false;
+            }
+        }
+
+        function validateEmail() {
+            const email = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValid = emailRegex.test(email);
+
+            if (!isValid && email.length > 0) {
+                emailInput.classList.add('error');
+                emailInput.classList.remove('success');
+                emailError.classList.add('show');
+                emailError.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a valid email address';
+                return false;
+            } else if (isValid) {
+                emailInput.classList.remove('error');
+                emailInput.classList.add('success');
+                emailError.classList.remove('show');
+                return true;
+            } else {
+                emailInput.classList.remove('error', 'success');
+                emailError.classList.remove('show');
+                return false;
+            }
+        }
+
+        function validatePassword() {
+            const password = passwordInput.value;
+            const isValid = password.length >= 8;
+
+            if (!isValid && password.length > 0) {
+                passwordInput.classList.add('error');
+                passwordInput.classList.remove('success');
+                passwordError.classList.add('show');
+                passwordError.innerHTML = '<i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters';
+                return false;
+            } else if (isValid) {
+                passwordInput.classList.remove('error');
+                passwordInput.classList.add('success');
+                passwordError.classList.remove('show');
+                return true;
+            } else {
+                passwordInput.classList.remove('error', 'success');
+                passwordError.classList.remove('show');
+                return false;
+            }
+        }
+
+        function validateConfirmPassword() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const isValid = password === confirmPassword && confirmPassword.length > 0;
+
+            if (!isValid && confirmPassword.length > 0) {
+                confirmPasswordInput.classList.add('error');
+                confirmPasswordInput.classList.remove('success');
+                confirmPasswordError.classList.add('show');
+                confirmPasswordError.innerHTML = '<i class="fas fa-exclamation-circle"></i> Passwords do not match';
+                return false;
+            } else if (isValid) {
+                confirmPasswordInput.classList.remove('error');
+                confirmPasswordInput.classList.add('success');
+                confirmPasswordError.classList.remove('show');
+                return true;
+            } else {
+                confirmPasswordInput.classList.remove('error', 'success');
+                confirmPasswordError.classList.remove('show');
+                return false;
+            }
+        }
+
+        function validateAddress() {
+            const address = addressInput.value.trim();
+            const city = cityInput.value.trim();
+            const state = stateInput.value.trim();
+            const zip = zipInput.value.trim();
+            const isValid = address.length > 0 && city.length > 0 && state.length > 0 && zip.length > 0;
+
+            if (!isValid && (address.length > 0 || city.length > 0 || state.length > 0 || zip.length > 0)) {
+                addressInput.classList.add('error');
+                addressError.classList.add('show');
+                addressError.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please complete all address fields';
+                return false;
+            } else if (isValid) {
+                addressInput.classList.remove('error');
+                addressInput.classList.add('success');
+                addressError.classList.remove('show');
+                return true;
+            } else {
+                addressInput.classList.remove('error', 'success');
+                addressError.classList.remove('show');
+                return false;
+            }
+        }
+
+        function validateLocation() {
+            if (!userLocation.detected) {
+                locationError.classList.add('show');
+                return false;
+            } else {
+                locationError.classList.remove('show');
+                return true;
+            }
+        }
+
+        function validateTerms() {
+            return termsCheckbox.checked;
+        }
+
+        // Real-time validation
+        fullNameInput.addEventListener('input', validateName);
+        fullNameInput.addEventListener('blur', validateName);
+
+        emailInput.addEventListener('input', validateEmail);
+        emailInput.addEventListener('blur', validateEmail);
+
+        passwordInput.addEventListener('input', function() {
+            validatePassword();
+            validateConfirmPassword();
+        });
+
+        confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+
+        addressInput.addEventListener('input', validateAddress);
+        cityInput.addEventListener('input', validateAddress);
+        stateInput.addEventListener('input', validateAddress);
+        zipInput.addEventListener('input', validateAddress);
+
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validate all fields
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPasswordValid = validatePassword();
+            const isConfirmPasswordValid = validateConfirmPassword();
+            const isAddressValid = validateAddress();
+            const isLocationValid = validateLocation();
+            const isTermsAccepted = validateTerms();
+
+            // Check if all validations pass
+            if (isNameValid && isEmailValid && isPasswordValid &&
+                isConfirmPasswordValid && isAddressValid && isLocationValid && isTermsAccepted) {
+
+                // Prepare registration data
+                const registrationData = {
+                    fullName: fullNameInput.value.trim(),
+                    email: emailInput.value.trim(),
+                    phone: phoneInput.value.trim(),
+                    password: passwordInput.value,
+                    address: {
+                        street: addressInput.value.trim(),
+                        city: cityInput.value.trim(),
+                        state: stateInput.value.trim(),
+                        zip: zipInput.value.trim()
+                    },
+                    location: {
+                        latitude: userLocation.latitude,
+                        longitude: userLocation.longitude,
+                        detected: userLocation.detected
+                    },
+                    marketingOptIn: document.getElementById('marketing').checked
+                };
+
+                console.log('Registration Data:', registrationData);
+
+                // Simulate form submission
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                submitBtn.disabled = true;
+
+                // Update progress steps
+                progressSteps[1].classList.remove('active');
+                progressSteps[1].classList.add('completed');
+                progressSteps[2].classList.add('active');
+
+                // Simulate API call
+                setTimeout(() => {
+                    // Show success message
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Account Created!';
+                    submitBtn.style.background = 'var(--success-green)';
+                    submitBtn.style.boxShadow = '0 0 20px rgba(0, 255, 136, 0.5)';
+
+                    // Update progress steps
+                    progressSteps[2].classList.remove('active');
+                    progressSteps[2].classList.add('completed');
+
+                    // Show success animation
+                    const card = document.querySelector('.registration-card');
+                    card.style.transform = 'scale(1.02)';
+                    card.style.boxShadow = '0 0 40px rgba(0, 255, 136, 0.3)';
+
+                    setTimeout(() => {
+                        card.style.transform = 'scale(1)';
+
+                        // Show success message with location info
+                        const successMessage = `
+                            Registration successful! Welcome to VoltVault Premium.
+
+                            Your location has been saved:
+                            • Coordinates: ${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}
+                            • Address: ${addressInput.value}, ${cityInput.value}, ${stateInput.value}
+
+                            You'll now see nearby EV charging stations on the map!
+                        `;
+
+                        alert(successMessage);
+                        form.submit();
+                        // In a real app: window.location.href = '/dashboard?lat=' + userLocation.latitude + '&lng=' + userLocation.longitude;
+                    }, 1000);
+                }, 2000);
+            } else {
+                // Show error for terms if not accepted
+                if (!isTermsAccepted) {
+                    termsCheckbox.parentElement.style.animation = 'shake 0.5s';
+                    setTimeout(() => {
+                        termsCheckbox.parentElement.style.animation = '';
+                    }, 500);
+                }
+
+                // Scroll to first error
+                const firstError = document.querySelector('.error-message.show');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
+        // Social login buttons
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const provider = this.classList.contains('google') ? 'Google' :
+                               this.classList.contains('apple') ? 'Apple' : 'Facebook';
+
+                // Animation
+                this.style.transform = 'scale(0.95)';
+                this.style.boxShadow = '0 0 20px rgba(0, 243, 255, 0.5)';
+
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = '';
+                }, 200);
+
+                console.log(`Social login with ${provider}`);
+                alert(`In a real application, this would redirect to ${provider} authentication.`);
+            });
+        });
+
+        // Input focus effects
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add shake animation for errors
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+
+            .progress-step.error .step-number {
+                background: var(--error-red);
+                color: var(--pure-white);
+                border-color: transparent;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Auto-detect location on page load (with permission request)
+
+
+        // Initialize with first step active
+        progressSteps[0].classList.add('active');
+    </script>
+</body>
+</html>

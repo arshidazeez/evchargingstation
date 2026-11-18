@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Emergency Bookings | VoltVault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --electric-purple: #b967ff;
+            --cyber-blue: #0066ff;
+            --dark-space: #0a0e17;
+            --space-gray: #1a1f2e;
+            --light-space: #2a3042;
+            --pure-white: #ffffff;
+            --emergency-red: #ff3366;
+            --warning-orange: #ffaa00;
+            --success-green: #00ff88;
+            --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            --emergency-glow: 0 0 25px rgba(255, 51, 102, 0.4);
+            --gradient-1: linear-gradient(135deg, #0066ff 0%, #00f3ff 50%, #b967ff 100%);
+            --gradient-emergency: linear-gradient(135deg, #ff3366 0%, #ffaa00 50%, #ff3366 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--pure-white);
+            background-color: var(--dark-space);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255, 51, 102, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 102, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(0, 243, 255, 0.05) 0%, transparent 50%);
+            z-index: -2;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            background: rgba(10, 14, 23, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 51, 102, 0.2);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--pure-white);
+        }
+
+        .logo-icon {
+            color: var(--emergency-red);
+            font-size: 2.2rem;
+            text-shadow: 0 0 10px var(--emergency-red);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #b0b7d0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            color: var(--neon-blue);
+        }
+
+        .nav-link.active {
+            color: var(--emergency-red);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: rgba(255, 51, 102, 0.1);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 51, 102, 0.2);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--dark-space);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 140px 0 80px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            background: var(--gradient-emergency);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .page-subtitle {
+            color: #b0b7d0;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 51, 102, 0.2);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--emergency-red);
+            box-shadow: var(--emergency-glow);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-emergency);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--pure-white);
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #b0b7d0;
+            font-size: 1rem;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .filter-title {
+            font-size: 1.5rem;
+            color: var(--pure-white);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 51, 102, 0.2);
+            border-radius: 15px;
+            color: var(--pure-white);
+            font-size: 1rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--emergency-red);
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            padding: 10px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 51, 102, 0.2);
+            border-radius: 50px;
+            color: #b0b7d0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-tag:hover {
+            border-color: var(--emergency-red);
+            color: var(--pure-white);
+        }
+
+        .filter-tag.active {
+            background: var(--gradient-emergency);
+            color: var(--pure-white);
+            border-color: transparent;
+        }
+
+        /* Bookings Grid */
+        .bookings-container {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--pure-white);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 51, 102, 0.3);
+        }
+
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .booking-card {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 51, 102, 0.2);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .booking-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--emergency-red);
+            box-shadow: var(--emergency-glow);
+        }
+
+        .booking-status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .status-dispatched {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--cyber-blue);
+            border: 1px solid rgba(0, 102, 255, 0.3);
+        }
+
+        .status-enroute {
+            background: rgba(255, 170, 0, 0.1);
+            color: var(--warning-orange);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+
+        .status-arrived {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        .status-completed {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(255, 51, 102, 0.1);
+            color: var(--emergency-red);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+        }
+
+        .booking-header {
+            padding: 30px 30px 20px;
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.1), rgba(0, 102, 255, 0.05));
+        }
+
+        .booking-code {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .booking-priority {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255, 51, 102, 0.1);
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--emergency-red);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+        }
+
+        .booking-body {
+            padding: 25px 30px;
+        }
+
+        .booking-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-label {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--pure-white);
+        }
+
+        .vehicle-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .vehicle-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-space);
+            font-size: 1.2rem;
+        }
+
+        .vehicle-details {
+            flex: 1;
+        }
+
+        .vehicle-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .vehicle-battery {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .battery-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .battery-fill {
+            height: 100%;
+            background: var(--gradient-emergency);
+            border-radius: 4px;
+        }
+
+        .booking-footer {
+            padding: 20px 30px;
+            background: rgba(10, 14, 23, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--pure-white);
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 51, 102, 0.1);
+            border-color: var(--emergency-red);
+            transform: translateY(-3px);
+        }
+
+        .btn-emergency {
+            background: var(--gradient-emergency);
+            color: var(--pure-white);
+        }
+
+        .btn-emergency:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--emergency-glow);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: rgba(26, 31, 46, 0.5);
+            border-radius: 20px;
+            border: 2px dashed rgba(255, 51, 102, 0.3);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: var(--emergency-red);
+            margin-bottom: 30px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--pure-white);
+        }
+
+        .empty-description {
+            color: #b0b7d0;
+            max-width: 400px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 50px;
+        }
+
+        .pagination-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 51, 102, 0.2);
+            color: var(--pure-white);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination-btn:hover {
+            background: var(--gradient-emergency);
+            border-color: transparent;
+            transform: translateY(-3px);
+        }
+
+        .pagination-btn.active {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            border-color: transparent;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 23, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: rgba(26, 31, 46, 0.95);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(255, 51, 102, 0.3);
+            position: relative;
+            backdrop-filter: blur(20px);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--pure-white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--emergency-red);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 14, 23, 0.95);
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255, 51, 102, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            margin-bottom: 40px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #b0b7d0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .bookings-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .bookings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .filter-header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .booking-card {
+                margin: 0 -20px;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+
+            .booking-header,
+            .booking-body,
+            .booking-footer {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="/" class="logo">
+                <i class="fas fa-bolt logo-icon"></i>
+                <span>VoltVault</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/user/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="/my-emergency-bookings/" class="nav-link active">
+                    <i class="fas fa-sos"></i>
+                    Emergency Bookings
+                </a>
+
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Emergency Bookings</h1>
+                <p class="page-subtitle">
+                    Track and manage all your emergency charging requests in one place. Stay updated on dispatch status and technician ETA.
+                </p>
+            </div>
+
+            <!-- Stats Overview -->
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-header">
+                    <h3 class="filter-title">Filter Bookings</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search by booking code, location, or vehicle..." onkeyup="searchBookings()">
+                    </div>
+                </div>
+
+                <div class="filter-tags">
+                    <span class="filter-tag active" onclick="filterBookings('all')">All Bookings</span>
+                    <span class="filter-tag" onclick="filterBookings('active')">Active</span>
+                    <span class="filter-tag" onclick="filterBookings('completed')">Completed</span>
+                    <span class="filter-tag" onclick="filterBookings('cancelled')">Cancelled</span>
+                    <span class="filter-tag" onclick="filterBookings('critical')">Critical</span>
+                    <span class="filter-tag" onclick="filterBookings('today')">Today</span>
+                    <span class="filter-tag" onclick="filterBookings('week')">This Week</span>
+                </div>
+            </div>
+
+            <!-- Active Bookings -->
+            <div class="bookings-container" id="activeBookings">
+                <h3 class="section-title">
+                    <i class="fas fa-spinner"></i>
+                    Active Emergencies
+                </h3>
+
+                <div class="bookings-grid">
+                    <!-- Active Booking 1 -->
+                    {% for i in bookings %}
+                    <div class="booking-card" data-status="enroute" data-priority="critical" data-date="today">
+                        <div class="booking-status-badge status-enroute">
+                            <i class="fas fa-truck-moving"></i>
+                           {{i.status}}
+                        </div>
+
+                        <div class="booking-header">
+                            <div class="booking-code">{{i.station.name|slice:4}}-{{i.id}}</div>
+                            <span class="booking-priority">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                CRITICAL
+                            </span>
+                        </div>
+
+                        <div class="booking-body">
+                            <div class="booking-info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">
+                                        <i class="fas fa-clock"></i>
+                                        Requested
+                                    </div>
+                                    <div class="info-value">{{i.created_at}}</div>
+                                </div>
+
+                                <div class="info-item">
+                                    <div class="info-label">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Location
+                                    </div>
+                                    <div class="info-value">{{i.location}}</div>
+                                </div>
+
+                                <div class="info-item">
+                                    <div class="info-label">
+                                        <i class="fas fa-stopwatch"></i>
+                                        ETA
+                                    </div>
+                                    <div class="info-value" style="color: var(--neon-blue);">12 minutes</div>
+                                </div>
+                            </div>
+
+                            <div class="vehicle-info">
+                                <div class="vehicle-icon">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <div class="vehicle-details">
+                                    <div class="vehicle-name">{{i.vehicle_model}}</div>
+                                    <div class="vehicle-battery">
+                                        <span>Battery: {{i.battery_level}}%</span>
+                                        <div class="battery-bar">
+                                            <div class="battery-fill" style="width: {{i.battery_level}}%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="booking-footer">
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary" onclick="contactDispatcher('RESCUE-4821')">
+                                    <i class="fas fa-phone"></i>
+                                    Call
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <!-- Active Booking 2 -->
+
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+
+            <!-- Empty State (hidden by default) -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-sos"></i>
+                </div>
+                <h3 class="empty-title">No Emergency Bookings Found</h3>
+                <p class="empty-description">
+                    You haven't requested any emergency charging services yet. When you do, they'll appear here for easy tracking and management.
+                </p>
+                <button class="btn btn-emergency" onclick="window.location.href='/emergency/request'">
+                    <i class="fas fa-plus"></i>
+                    Request Emergency Service
+                </button>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="pagination-btn" onclick="changePage(1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn" onclick="changePage(2)">2</button>
+                <button class="pagination-btn" onclick="changePage(3)">3</button>
+                <button class="pagination-btn">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+                <button class="pagination-btn" onclick="changePage(8)">8</button>
+                <button class="pagination-btn" onclick="changePage(2)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3>VoltVault Emergency</h3>
+                    <p style="color: #b0b7d0; margin-bottom: 25px; line-height: 1.8;">
+                        24/7 Emergency EV Charging Services. Your safety is our priority.
+                    </p>
+                </div>
+
+                <div>
+                    <h3>Quick Actions</h3>
+                    <ul style="list-style: none; color: #b0b7d0;">
+                        <li style="margin-bottom: 10px;">
+                            <a href="/emergency/request" style="color: var(--emergency-red); text-decoration: none;">
+                                <i class="fas fa-plus"></i> New Emergency Request
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/user/history" style="color: var(--neon-blue); text-decoration: none;">
+                                <i class="fas fa-history"></i> Service History
+                            </a>
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <a href="/user/support" style="color: #b0b7d0; text-decoration: none;">
+                                <i class="fas fa-headset"></i> Contact Support
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>Emergency Contacts</h3>
+                    <ul style="list-style: none; color: #b0b7d0;">
+                        <li style="margin-bottom: 10px;">
+                            <i class="fas fa-phone" style="color: var(--emergency-red); margin-right: 10px;"></i>
+                            1-800-VOLT-911
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <i class="fas fa-envelope" style="color: var(--neon-blue); margin-right: 10px;"></i>
+                            emergency@voltvault.com
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2023 VoltVault Emergency Services. All emergency bookings are monitored 24/7.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Tracking Modal -->
+    <div class="modal" id="trackingModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('trackingModal')">&times;</button>
+            <h2 style="margin-bottom: 30px; text-align: center; color: var(--neon-blue);">
+                <i class="fas fa-map-marked-alt"></i>
+                Technician Tracking
+            </h2>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="font-size: 2rem; font-weight: 800; color: var(--emergency-red); margin-bottom: 10px;">
+                    RESCUE-4821
+                </div>
+                <div style="color: #b0b7d0;">Technician: Mike Rodriguez • Unit #7</div>
+            </div>
+
+            <div style="background: rgba(255, 51, 102, 0.05); border-radius: 15px; padding: 25px; margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <div>
+                        <div style="color: #b0b7d0; font-size: 0.9rem;">Current Location</div>
+                        <div style="font-weight: 600;">I-95 North, Mile Marker 41</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: #b0b7d0; font-size: 0.9rem;">Distance to You</div>
+                        <div style="font-weight: 600; color: var(--neon-blue);">4.2 miles</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.05); height: 10px; border-radius: 5px; margin-bottom: 10px;">
+                    <div style="background: var(--gradient-emergency); height: 100%; width: 75%; border-radius: 5px;"></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; color: #b0b7d0; font-size: 0.9rem;">
+                    <span>Technician</span>
+                    <span>You</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="font-size: 3rem; font-weight: 800; color: var(--neon-blue);">12m</div>
+                <div style="color: #b0b7d0;">Estimated Time of Arrival</div>
+            </div>
+
+            <button class="btn btn-emergency" style="width: 100%;">
+                <i class="fas fa-phone"></i>
+                Call Technician
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Filter Bookings
+        function filterBookings(filter) {
+            // Update active filter tag
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Show/hide bookings based on filter
+            const bookings = document.querySelectorAll('.booking-card');
+            let visibleCount = 0;
+
+            bookings.forEach(booking => {
+                const status = booking.getAttribute('data-status');
+                const priority = booking.getAttribute('data-priority');
+                const date = booking.getAttribute('data-date');
+
+                let show = false;
+
+                switch(filter) {
+                    case 'all':
+                        show = true;
+                        break;
+                    case 'active':
+                        show = status === 'dispatched' || status === 'enroute' || status === 'arrived';
+                        break;
+                    case 'completed':
+                        show = status === 'completed';
+                        break;
+                    case 'cancelled':
+                        show = status === 'cancelled';
+                        break;
+                    case 'critical':
+                        show = priority === 'critical';
+                        break;
+                    case 'today':
+                        show = date === 'today';
+                        break;
+                    case 'week':
+                        show = date === 'today' || date === 'yesterday' || date === 'week';
+                        break;
+                }
+
+                if (show) {
+                    booking.style.display = 'block';
+                    visibleCount++;
+                    setTimeout(() => {
+                        booking.classList.add('animate__animated', 'animate__fadeIn');
+                    }, 10);
+                } else {
+                    booking.style.display = 'none';
+                }
+            });
+
+            // Show empty state if no bookings
+            const emptyState = document.getElementById('emptyState');
+            if (visibleCount === 0 && filter !== 'all') {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        // Search Bookings
+        function searchBookings() {
+            const searchTerm = document.querySelector('.search-input').value.toLowerCase();
+            const bookings = document.querySelectorAll('.booking-card');
+
+            bookings.forEach(booking => {
+                const text = booking.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    booking.style.display = 'block';
+                    booking.classList.add('animate__animated', 'animate__fadeIn');
+                } else {
+                    booking.style.display = 'none';
+                }
+            });
+        }
+
+        // Action Functions
+        function trackTechnician(bookingCode) {
+            document.getElementById('trackingModal').style.display = 'flex';
+            // In a real app, you would fetch live tracking data here
+        }
+
+        function contactDispatcher(bookingCode) {
+            window.location.href = 'tel:+18008658911';
+        }
+
+        function updateBooking(bookingCode) {
+            alert(`Update booking ${bookingCode} - This would open an update form in a real app.`);
+        }
+
+        function viewDetails(bookingCode) {
+            window.location.href = `/booking/${bookingCode}/invoice`;
+        }
+
+        function rateService(bookingCode) {
+            alert(`Rate service for ${bookingCode} - This would open a rating modal in a real app.`);
+        }
+
+        function rebookTechnician(bookingCode) {
+            if (confirm('Would you like to rebook the same technician?')) {
+                window.location.href = `/emergency/request?rebook=${bookingCode}`;
+            }
+        }
+
+        function contactSupport(bookingCode) {
+            window.location.href = `/support?booking=${bookingCode}`;
+        }
+
+        function requestNewEmergency() {
+            window.location.href = '/emergency/request';
+        }
+
+        // Modal Functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Pagination
+        function changePage(page) {
+            // In a real app, this would fetch new page data
+            document.querySelectorAll('.pagination-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Simulate loading
+            const bookings = document.querySelectorAll('.booking-card');
+            bookings.forEach(booking => {
+                booking.style.opacity = '0.5';
+            });
+
+            setTimeout(() => {
+                bookings.forEach(booking => {
+                    booking.style.opacity = '1';
+                });
+            }, 500);
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation to booking cards on load
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe booking cards
+            document.querySelectorAll('.booking-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // Initialize live updates for active bookings
+            setInterval(() => {
+                updateActiveBookings();
+            }, 30000); // Update every 30 seconds
+        });
+
+        // Simulate live updates for active bookings
+        function updateActiveBookings() {
+            const activeBookings = document.querySelectorAll('[data-status="enroute"], [data-status="dispatched"]');
+
+            activeBookings.forEach(booking => {
+                const etaElement = booking.querySelector('.info-value[style*="color"]');
+                if (etaElement) {
+                    const currentText = etaElement.textContent;
+                    const minutes = parseInt(currentText);
+                    if (!isNaN(minutes) && minutes > 1) {
+                        const newMinutes = minutes - 1;
+                        etaElement.textContent = `${newMinutes} minute${newMinutes !== 1 ? 's' : ''}`;
+
+                        // Update progress bar if it exists
+                        const progressBar = booking.querySelector('.battery-bar');
+                        if (progressBar) {
+                            const currentWidth = progressBar.querySelector('.battery-fill').style.width;
+                            const currentPercent = parseInt(currentWidth);
+                            if (!isNaN(currentPercent)) {
+                                const newPercent = Math.min(currentPercent + 3, 100);
+                                progressBar.querySelector('.battery-fill').style.width = `${newPercent}%`;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

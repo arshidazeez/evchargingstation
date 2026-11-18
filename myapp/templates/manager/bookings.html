@@ -1,0 +1,2235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings Management | VoltVault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --electric-purple: #b967ff;
+            --cyber-blue: #0066ff;
+            --dark-space: #0a0e17;
+            --space-gray: #1a1f2e;
+            --light-space: #2a3042;
+            --pure-white: #ffffff;
+            --success-green: #00ff88;
+            --warning-yellow: #ffcc00;
+            --error-red: #ff4757;
+            --info-blue: #3498db;
+            --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            --purple-glow: 0 0 25px rgba(185, 103, 255, 0.4);
+            --gradient-1: linear-gradient(135deg, #0066ff 0%, #00f3ff 50%, #b967ff 100%);
+            --gradient-2: linear-gradient(45deg, #b967ff 0%, #0066ff 100%);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--pure-white);
+            background-color: var(--dark-space);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(0, 102, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(185, 103, 255, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .float-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .float-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--neon-blue);
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .float-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--electric-purple);
+            bottom: 15%;
+            left: 10%;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -50px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(26, 31, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 243, 255, 0.1);
+            padding: 25px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 0 25px 30px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--neon-blue);
+            font-size: 2rem;
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--dark-space);
+        }
+
+        .user-details h4 {
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+        }
+
+        .user-details p {
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            font-weight: 500;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            color: #b0b7d0;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--pure-white);
+            padding-left: 30px;
+        }
+
+        .nav-link.active {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            font-weight: 600;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--neon-blue);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--electric-purple);
+            color: var(--pure-white);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .header-left h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .station-badge {
+            background: var(--gradient-2);
+            color: var(--dark-space);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            color: #b0b7d0;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .notification-btn:hover {
+            color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--error-red);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .quick-action-btn {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+        }
+
+        /* Dashboard Stats */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow-shadow);
+            border-color: var(--neon-blue);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .stat-change.positive {
+            color: var(--success-green);
+        }
+
+        .stat-change.negative {
+            color: var(--error-red);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-label {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+        }
+
+        /* Bookings Container */
+        .bookings-container {
+            background: rgba(26, 31, 46, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .bookings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .bookings-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .bookings-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filters-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tag {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+        }
+
+        .filter-tag:hover {
+            background: rgba(0, 243, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .filter-tag.active {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            border-color: transparent;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            color: #b0b7d0;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .filter-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: var(--pure-white);
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+
+        .filter-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: var(--pure-white);
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+        }
+
+        /* Bookings Table */
+        .bookings-table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        .bookings-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .bookings-table th {
+            text-align: left;
+            padding: 20px;
+            background: rgba(0, 243, 255, 0.05);
+            color: var(--neon-blue);
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+            white-space: nowrap;
+        }
+
+        .bookings-table td {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.05);
+        }
+
+        .bookings-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bookings-table tr:hover {
+            background: rgba(0, 243, 255, 0.03);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-confirmed {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .status-completed {
+            background: rgba(255, 255, 255, 0.1);
+            color: #b0b7d0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-cancelled {
+            background: rgba(255, 71, 87, 0.1);
+            color: var(--error-red);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .status-no-show {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--warning-yellow);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .status-pending {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--info-blue);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: #b0b7d0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--pure-white);
+            transform: translateY(-2px);
+        }
+
+        .action-btn-primary {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        .action-btn-primary:hover {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            border-color: transparent;
+        }
+
+        .action-btn-success {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .action-btn-success:hover {
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        .action-btn-warning {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--warning-yellow);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+
+        .action-btn-warning:hover {
+            background: rgba(255, 204, 0, 0.2);
+        }
+
+        .action-btn-danger {
+            background: rgba(255, 71, 87, 0.1);
+            color: var(--error-red);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        .action-btn-danger:hover {
+            background: rgba(255, 71, 87, 0.2);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .pagination-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            color: var(--pure-white);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination-btn:hover {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--neon-blue);
+        }
+
+        .pagination-btn.active {
+            background: var(--gradient-1);
+            color: var(--dark-space);
+            border-color: transparent;
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(0, 243, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 2.5rem;
+            color: var(--neon-blue);
+        }
+
+        .empty-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-text {
+            color: #b0b7d0;
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 23, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: rgba(26, 31, 46, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            box-shadow: var(--glow-shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-large {
+            max-width: 800px;
+        }
+
+        select{
+          width: 100%;
+          padding: 12px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(0, 243, 255, 0.2);
+          border-radius: 8px;
+          color: white;
+        }
+        select option{
+          background: rgba(10, 14, 23, 0.95);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #b0b7d0;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--neon-blue);
+        }
+
+        /* Booking Details Modal */
+        .booking-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-label {
+            color: #b0b7d0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .detail-value.highlight {
+            color: var(--neon-blue);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(0, 243, 255, 0.1);
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--neon-blue);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-blue);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--electric-purple);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .booking-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 1001;
+                background: none;
+                border: none;
+                color: var(--neon-blue);
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            .header {
+                margin-top: 60px;
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .bookings-controls {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .bookings-table {
+                font-size: 0.85rem;
+            }
+
+            .bookings-table th,
+            .bookings-table td {
+                padding: 12px 8px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                min-width: 120px;
+            }
+
+            .modal-content {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+
+            .stat-card,
+            .bookings-container {
+                padding: 20px;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .bookings-table th:nth-child(4),
+            .bookings-table td:nth-child(4),
+            .bookings-table th:nth-child(5),
+            .bookings-table td:nth-child(5) {
+                display: none;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="float-circle float-1"></div>
+        <div class="float-circle float-2"></div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="/manager/" class="logo">
+                <i class="fas fa-bolt logo-icon"></i>
+                <span>VoltVault</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="/manager/" class="nav-link">
+                        <i class="fas fa-home nav-icon"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/my-stations/" class="nav-link">
+                        <i class="fas fa-charging-station nav-icon"></i>
+                        My Stations
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/bookings/" class="nav-link active">
+                        <i class="fas fa-calendar-check nav-icon"></i>
+                        Bookings
+                    </a>
+                </li><li class="nav-item">
+                    <a href="/emergency-bookings/" class="nav-link">
+                        <i class="fas fa-calendar-check nav-icon"></i>
+                        Emergency Bookings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/manager-profile/" class="nav-link">
+                        <i class="fas fa-user-tie nav-icon"></i>
+                        manager Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-cog nav-icon"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Bookings Management</h1>
+                <p>
+                    <i class="fas fa-charging-station"></i>
+                    Downtown Station
+                    <span class="station-badge">ID: DT-001</span>
+                </p>
+            </div>
+            <div class="header-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <button class="quick-action-btn" id="addBookingBtn">
+                    <i class="fas fa-plus"></i>
+                    New Manual Booking
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Stats -->
+
+        <!-- Bookings Container -->
+        <div class="bookings-container">
+            <!-- Bookings Header -->
+            <div class="bookings-header">
+                <h2>All Bookings</h2>
+                <div class="bookings-controls">
+                    <button class="action-btn" id="exportBtn">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                    <button class="action-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-header">
+                    <h3>
+                        <i class="fas fa-filter"></i>
+                        Filter Bookings
+                    </h3>
+                    <button class="action-btn" id="clearFiltersBtn">
+                        <i class="fas fa-times"></i>
+                        Clear Filters
+                    </button>
+                </div>
+
+                <!-- Filter Tags -->
+                <div class="filter-tags">
+                    <span class="filter-tag active" data-filter="all">All Bookings</span>
+
+                </div>
+
+                <!-- Advanced Filters -->
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </label>
+                        <input type="text" class="filter-input" id="searchInput" placeholder="Search by booking ID, user, or vehicle">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-calendar"></i>
+                            Date Range
+                        </label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="date" class="filter-input" id="dateFrom">
+                            <input type="date" class="filter-input" id="dateTo">
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-plug"></i>
+                            Port Type
+                        </label>
+                        <select class="filter-select" id="portTypeFilter">
+                            <option value="all">All Types</option>
+                            <option value="fast">Fast Charger</option>
+                            <option value="standard">Standard</option>
+                            <option value="tesla">Tesla</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-sort-amount-down"></i>
+                            Sort By
+                        </label>
+                        <select class="filter-select" id="sortBy">
+                            <option value="date_desc">Date (Newest First)</option>
+                            <option value="date_asc">Date (Oldest First)</option>
+                            <option value="status">Status</option>
+                            <option value="amount_desc">Amount (High to Low)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bookings Table -->
+            <div class="bookings-table-container">
+                <table class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>User</th>
+                            <th>Vehicle</th>
+                            <th>Port</th>
+                            <th>Date & Time</th>
+                            <th>Duration</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody">
+                        <!-- Bookings will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3 class="empty-title">No Bookings Found</h3>
+                <p class="empty-text">No bookings match your current filters. Try adjusting your search criteria.</p>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be generated here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Booking Details Modal -->
+    <div class="modal" id="bookingDetailsModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Booking Details</h3>
+                <button class="close-modal" id="closeDetailsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="bookingDetailsContent">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- New Booking Modal -->
+    <div class="modal" id="newBookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Manual Booking</h3>
+                <button class="close-modal" id="closeNewBookingModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="newBookingForm">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: #b0b7d0; margin-bottom: 8px; font-size: 0.9rem;">Select Port</label>
+                    <select style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; color: white;" id="newBookingPort" required>
+                        <option value="">Select a port...</option>
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <label style="display: block; color: #b0b7d0; margin-bottom: 8px; font-size: 0.9rem;">Date</label>
+                        <input type="date" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; color: white;" id="bookingDate" required>
+                    </div>
+                    <div>
+                        <label style="display: block; color: #b0b7d0; margin-bottom: 8px; font-size: 0.9rem;">Start Time</label>
+                        <input type="time" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; color: white;" id="bookingTime" required>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: #b0b7d0; margin-bottom: 8px; font-size: 0.9rem;">Duration</label>
+                    <select style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; color: white;" id="bookingDuration">
+                        <option value="30">30 minutes</option>
+                        <option value="60">1 hour</option>
+                        <option value="90">1.5 hours</option>
+                        <option value="120">2 hours</option>
+                        <option value="180">3 hours</option>
+                        <option value="240">4 hours</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: #b0b7d0; margin-bottom: 8px; font-size: 0.9rem;">Customer Information</label>
+                    <input type="text" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; color: white; margin-bottom: 10px;" placeholder="Customer Name" id="customerName" required>
+                    <input type="email" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; color: white;" placeholder="Email Address" id="customerEmail" required>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: #b0b7d0; margin-bottom: 8px; font-size: 0.9rem;">Vehicle Details</label>
+                    <input type="text" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; color: white; margin-bottom: 10px;" placeholder="Vehicle Model" id="vehicleModel" required>
+                    <input type="text" style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; color: white;" placeholder="License Plate" id="licensePlate">
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; color: #b0b7d0; margin-bottom: 8px; font-size: 0.9rem;">Special Instructions</label>
+                    <textarea style="width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; color: white; min-height: 80px;" placeholder="Any special instructions or notes..." id="bookingNotes"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="action-btn" id="cancelBookingBtn">
+                        Cancel
+                    </button>
+                    <button type="submit" class="action-btn action-btn-primary" id="createBookingBtn">
+                        <i class="fas fa-calendar-plus"></i>
+                        Create Booking
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Status Change Modal -->
+    <div class="modal" id="statusModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="statusModalTitle">Change Booking Status</h3>
+                <button class="close-modal" id="closeStatusModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; color: #b0b7d0; margin-bottom: 8px; font-size: 0.9rem;">Select New Status</label>
+                <select id="statusSelect">
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="action-btn" id="cancelStatusBtn">
+                    Cancel
+                </button>
+                <button type="button" class="action-btn action-btn-primary" id="confirmStatusBtn">
+                    Update Status
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample booking data for station manager
+        const bookings = [
+          {% for i in bookings %}
+            {
+                id: {{i.id}},
+                bookingId: 'VLTV-2026-{{i.id}}',
+                user: {
+                    name: '{{i.user.name}}',
+                    email: '{{i.user.email}}',
+                    phone: '{{i.user.phone}}',
+                    membership: 'Premium'
+                },
+                vehicle: {
+                    model: '{{i.vehicle_model}}',
+                    license: 'TESLA123',
+                    type: '{{i.vehicle_type}}',
+                    battery: '75 kWh'
+                },
+                port: {
+                    number: '01',
+                    type: '{{i.port.type}}',
+                    power: '{{i.port.power}}kW',
+                    price: {{i.port.price}}
+                },
+                date: '{{i.date}}',
+                time: '{{i.time}}',
+                duration: '{{i.duration}}',
+                amount: {{i.amount}},
+                status: '{{i.status|lower}}',
+                created_at: '{{i.created_at}}',
+                payment_status: 'Paid',
+                estimated_completion: '16:00',
+                notes: 'Regular customer, prefers port #01',
+                station: '{{i.port.station.name}}'
+            },
+          {% endfor %}
+        ];
+
+        // Available ports for manual booking
+        const availablePorts = [
+            { id: 1, number: '03', type: 'Standard', power: '50kW', price: 0.25, status: 'available' },
+            { id: 2, number: '06', type: 'Standard', power: '50kW', price: 0.25, status: 'available' },
+            { id: 3, number: '08', type: 'Standard', power: '50kW', price: 0.25, status: 'available' },
+            { id: 4, number: '09', type: 'Fast Charger', power: '150kW', price: 0.35, status: 'available' },
+            { id: 5, number: '10', type: 'Fast Charger', power: '150kW', price: 0.35, status: 'available' },
+            { id: 6, number: '11', type: 'Tesla', power: '250kW', price: 0.45, status: 'available' },
+            { id: 7, number: '12', type: 'Tesla', power: '250kW', price: 0.45, status: 'available' }
+        ];
+
+        // Current state
+        let currentBookings = [...bookings];
+        let currentFilter = 'all';
+        let currentPage = 1;
+        const itemsPerPage = 8;
+        let selectedBookingId = null;
+
+        // DOM Elements
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const bookingsTableBody = document.getElementById('bookingsTableBody');
+        const pagination = document.getElementById('pagination');
+        const emptyState = document.getElementById('emptyState');
+        const filterTags = document.querySelectorAll('.filter-tag');
+        const searchInput = document.getElementById('searchInput');
+        const dateFrom = document.getElementById('dateFrom');
+        const dateTo = document.getElementById('dateTo');
+        const portTypeFilter = document.getElementById('portTypeFilter');
+        const sortBy = document.getElementById('sortBy');
+        const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const addBookingBtn = document.getElementById('addBookingBtn');
+        const newBookingModal = document.getElementById('newBookingModal');
+        const closeNewBookingModal = document.getElementById('closeNewBookingModal');
+        const newBookingForm = document.getElementById('newBookingForm');
+        const bookingDetailsModal = document.getElementById('bookingDetailsModal');
+        const closeDetailsModal = document.getElementById('closeDetailsModal');
+        const statusModal = document.getElementById('statusModal');
+        const closeStatusModal = document.getElementById('closeStatusModal');
+        const newBookingPort = document.getElementById('newBookingPort');
+        const statusSelect = document.getElementById('statusSelect');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeDateFilters();
+            renderBookings();
+            populatePorts();
+            setupEventListeners();
+        });
+
+        // Initialize date filters
+        function initializeDateFilters() {
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 7);
+            const nextWeek = tomorrow.toISOString().split('T')[0];
+
+            dateFrom.value = today;
+            dateTo.value = nextWeek;
+            dateFrom.max = nextWeek;
+            dateTo.max = nextWeek;
+        }
+
+        // Render bookings table
+        function renderBookings() {
+            bookingsTableBody.innerHTML = '';
+
+            if (currentBookings.length === 0) {
+                emptyState.style.display = 'block';
+                pagination.style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            pagination.style.display = 'flex';
+
+            // Calculate pagination
+            const totalPages = Math.ceil(currentBookings.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, currentBookings.length);
+            const paginatedBookings = currentBookings.slice(startIndex, endIndex);
+
+            // Render table rows
+            paginatedBookings.forEach(booking => {
+                const row = document.createElement('tr');
+
+                // Format date and time
+                const bookingDate = new Date(booking.date);
+                const formattedDate = bookingDate.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                // Get status badge class
+                const statusClass = getStatusClass(booking.status);
+
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 600; color: var(--neon-blue);">${booking.bookingId}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">${booking.user.name}</div>
+                        <div style="font-size: 0.85rem; color: #b0b7d0;">${booking.user.email}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">${booking.vehicle.model}</div>
+                        <div style="font-size: 0.85rem; color: #b0b7d0;">${booking.vehicle.license}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">Port ${booking.port.number}</div>
+                        <div style="font-size: 0.85rem; color: #b0b7d0;">${booking.port.type}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">${formattedDate}</div>
+                        <div style="font-size: 0.85rem; color: #b0b7d0;">${booking.time}</div>
+                    </td>
+                    <td>${booking.duration}</td>
+                    <td>
+                        <div style="font-weight: 600; color: var(--neon-blue);">₹${booking.amount.toFixed(2)}</div>
+                    </td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            <i class="${getStatusIcon(booking.status)}"></i>
+                            ${capitalizeFirstLetter(booking.status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn action-btn-primary" onclick="viewBookingDetails(${booking.id})">
+                                <i class="fas fa-eye"></i>
+                                View
+                            </button>
+                            ${booking.status === 'booked' ?`
+                            <button class="action-btn action-btn-success" onclick="changeBookingStatus(${booking.id})">
+                                <i class="fas fa-edit"></i>
+                                Status
+                            </button>
+                            `:''}
+                        </div>
+                    </td>
+                `;
+
+                bookingsTableBody.appendChild(row);
+            });
+
+            renderPagination(totalPages);
+        }
+
+        // Get status class
+        function getStatusClass(status) {
+            const classes = {
+                'confirmed': 'status-confirmed',
+                'active': 'status-active',
+                'completed': 'status-completed',
+                'cancelled': 'status-cancelled',
+                'no-show': 'status-no-show',
+                'pending': 'status-pending'
+            };
+            return classes[status] || 'status-confirmed';
+        }
+
+        // Get status icon
+        function getStatusIcon(status) {
+            const icons = {
+                'confirmed': 'fas fa-check-circle',
+                'active': 'fas fa-bolt',
+                'completed': 'fas fa-check-double',
+                'cancelled': 'fas fa-times-circle',
+                'no-show': 'fas fa-user-slash',
+                'pending': 'fas fa-clock'
+            };
+            return icons[status] || 'fas fa-question-circle';
+        }
+
+        // Capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        // Render pagination
+        function renderPagination(totalPages) {
+            pagination.innerHTML = '';
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = `pagination-btn ${currentPage === 1 ? 'disabled' : ''}`;
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderBookings();
+                }
+            };
+            pagination.appendChild(prevBtn);
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `pagination-btn ${currentPage === i ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    renderBookings();
+                };
+                pagination.appendChild(pageBtn);
+            }
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = `pagination-btn ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderBookings();
+                }
+            };
+            pagination.appendChild(nextBtn);
+        }
+
+        // Populate ports for new booking
+        function populatePorts() {
+            newBookingPort.innerHTML = '<option value="">Select a port...</option>';
+            availablePorts.forEach(port => {
+                if (port.status === 'available') {
+                    const option = document.createElement('option');
+                    option.value = port.id;
+                    option.textContent = `Port ${port.number} - ${port.type} (${port.power}) - $${port.price}/kWh`;
+                    newBookingPort.appendChild(option);
+                }
+            });
+        }
+
+        // Apply filters
+        function applyFilters() {
+            currentPage = 1;
+
+            let filtered = [...bookings];
+
+            // Apply status filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(booking => {
+                    if (currentFilter === 'today') {
+                        const today = new Date().toISOString().split('T')[0];
+                        return booking.date === today;
+                    } else if (currentFilter === 'upcoming') {
+                        const today = new Date().toISOString().split('T')[0];
+                        const bookingDate = new Date(booking.date);
+                        const todayDate = new Date(today);
+                        return bookingDate > todayDate && booking.status !== 'cancelled';
+                    } else {
+                        return booking.status === currentFilter;
+                    }
+                });
+            }
+
+            // Apply search filter
+            const searchTerm = searchInput.value.toLowerCase();
+            if (searchTerm) {
+                filtered = filtered.filter(booking =>
+                    booking.bookingId.toLowerCase().includes(searchTerm) ||
+                    booking.user.name.toLowerCase().includes(searchTerm) ||
+                    booking.user.email.toLowerCase().includes(searchTerm) ||
+                    booking.vehicle.model.toLowerCase().includes(searchTerm) ||
+                    booking.vehicle.license.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Apply date filter
+            if (dateFrom.value) {
+                filtered = filtered.filter(booking => booking.date >= dateFrom.value);
+            }
+            if (dateTo.value) {
+                filtered = filtered.filter(booking => booking.date <= dateTo.value);
+            }
+
+            // Apply port type filter
+            const portType = portTypeFilter.value;
+            if (portType !== 'all') {
+                filtered = filtered.filter(booking => {
+                    const bookingPortType = booking.port.type.toLowerCase();
+                    if (portType === 'fast') return bookingPortType.includes('fast');
+                    if (portType === 'standard') return bookingPortType.includes('standard');
+                    if (portType === 'tesla') return bookingPortType.includes('tesla');
+                    return true;
+                });
+            }
+
+            // Apply sorting
+            const sortValue = sortBy.value;
+            filtered.sort((a, b) => {
+                switch (sortValue) {
+                    case 'date_desc':
+                        return new Date(b.date + 'T' + b.time) - new Date(a.date + 'T' + a.time);
+                    case 'date_asc':
+                        return new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time);
+                    case 'status':
+                        return a.status.localeCompare(b.status);
+                    case 'amount_desc':
+                        return b.amount - a.amount;
+                    default:
+                        return 0;
+                }
+            });
+
+            currentBookings = filtered;
+            renderBookings();
+        }
+
+        // View booking details
+        function viewBookingDetails(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            selectedBookingId = bookingId;
+
+            const bookingDate = new Date(booking.date);
+            const createdDate = new Date(booking.created_at);
+
+            const formattedBookingDate = bookingDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const formattedCreatedDate = createdDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Calculate end time
+            const [hours, minutes] = booking.time.split(':');
+            const startTime = new Date(bookingDate);
+            startTime.setHours(parseInt(hours), parseInt(minutes));
+
+            const durationMatch = booking.duration.match(/(\d+\.?\d*)/);
+            const durationHours = durationMatch ? parseFloat(durationMatch[1]) : 2;
+
+            const endTime = new Date(startTime.getTime() + durationHours * 60 * 60 * 1000);
+            const endTimeStr = endTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            // Get status class
+            const statusClass = getStatusClass(booking.status);
+
+            const detailsHTML = `
+                <div class="booking-details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-hashtag"></i>
+                            Booking ID
+                        </div>
+                        <div class="detail-value highlight">${booking.bookingId}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-user"></i>
+                            Customer
+                        </div>
+                        <div class="detail-value">${booking.user.name}</div>
+                        <div style="font-size: 0.9rem; color: #b0b7d0;">
+                            ${booking.user.email}<br>
+                            ${booking.user.phone}<br>
+                            ${booking.user.membership} Member
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-car"></i>
+                            Vehicle
+                        </div>
+                        <div class="detail-value">${booking.vehicle.model}</div>
+                        <div style="font-size: 0.9rem; color: #b0b7d0;">
+                            License: ${booking.vehicle.license}<br>
+                            Type: ${booking.vehicle.type}<br>
+                            Battery: ${booking.vehicle.battery}
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-plug"></i>
+                            Port Details
+                        </div>
+                        <div class="detail-value">Port ${booking.port.number}</div>
+                        <div style="font-size: 0.9rem; color: #b0b7d0;">
+                            Type: ${booking.port.type}<br>
+                            Power: ${booking.port.power}<br>
+                            Price: $${booking.port.price}/kWh
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Schedule
+                        </div>
+                        <div class="detail-value">${formattedBookingDate}</div>
+                        <div style="font-size: 0.9rem; color: #b0b7d0;">
+                            Time: ${booking.time} - ${endTimeStr}<br>
+                            Duration: ${booking.duration}<br>
+                            Booked on: ${formattedCreatedDate}
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-dollar-sign"></i>
+                            Payment
+                        </div>
+                        <div class="detail-value highlight">$${booking.amount.toFixed(2)}</div>
+                        <div style="font-size: 0.9rem; color: #b0b7d0;">
+                            Status: ${booking.payment_status}<br>
+                            Port Price: $${booking.port.price}/kWh
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div style="font-weight: 600;">Booking Status</div>
+                        <span class="status-badge ${statusClass}" style="font-size: 1rem;">
+                            <i class="${getStatusIcon(booking.status)}"></i>
+                            ${capitalizeFirstLetter(booking.status)}
+                        </span>
+                    </div>
+
+                    ${booking.notes ? `
+                        <div style="margin-bottom: 15px;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">Notes</div>
+                            <div style="color: #b0b7d0;">${booking.notes}</div>
+                        </div>
+                    ` : ''}
+
+                    ${booking.cancellation_reason ? `
+                        <div style="margin-bottom: 15px;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">Cancellation Reason</div>
+                            <div style="color: var(--error-red);">${booking.cancellation_reason}</div>
+                        </div>
+                    ` : ''}
+
+                    ${booking.estimated_completion ? `
+                        <div style="margin-bottom: 15px;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">Estimated Completion</div>
+                            <div style="color: var(--neon-blue);">${booking.estimated_completion}</div>
+                        </div>
+                    ` : ''}
+
+                    ${booking.completion_time ? `
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 8px;">Actual Completion</div>
+                            <div style="color: var(--success-green);">${booking.completion_time}</div>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="modal-actions">
+                    ${booking.status === 'booked' ?`
+                    <button class="action-btn action-btn-success" onclick="changeBookingStatus(${booking.id})">
+                        <i class="fas fa-edit"></i>
+                        Change Status
+                    </button>
+                    `:''}
+                    ${booking.status === 'cancelled' || booking.status === 'completed' ? '' : `
+                        <button class="action-btn action-btn-danger" onclick="cancelBooking(${booking.id})">
+                            <i class="fas fa-ban"></i>
+                            Cancel Booking
+                        </button>
+                    `}
+                </div>
+            `;
+
+            document.getElementById('bookingDetailsContent').innerHTML = detailsHTML;
+            bookingDetailsModal.classList.add('active');
+        }
+
+        // Change booking status
+        function changeBookingStatus(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (!booking) return;
+
+            selectedBookingId = bookingId;
+            document.getElementById('statusModalTitle').textContent = `Change Status - ${booking.bookingId}`;
+            statusSelect.value = booking.status;
+            statusModal.classList.add('active');
+        }
+
+        // Cancel booking
+        function cancelBooking(bookingId) {
+            if (confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
+                const booking = bookings.find(b => b.id === bookingId);
+                if (booking) {
+                    booking.status = 'cancelled';
+                    booking.cancellation_reason = 'Cancelled by station manager';
+                    applyFilters();
+                    showNotification('Booking cancelled successfully', 'success');
+                    closeModalById('bookingDetailsModal');
+                }
+            }
+        }
+
+        // Send reminder
+        function sendReminder(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (booking) {
+                // Simulate sending reminder
+                const submitBtn = document.querySelector('.modal-actions .action-btn-warning');
+                const originalText = submitBtn.innerHTML;
+
+                submitBtn.innerHTML = '<span class="loading"></span> Sending...';
+                submitBtn.disabled = true;
+
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    showNotification(`Reminder sent to ${booking.user.email}`, 'success');
+                }, 1500);
+            }
+        }
+
+        // Open new booking modal
+        function openNewBookingModal() {
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('bookingDate').value = today;
+
+            // Set default time to next hour
+            const nextHour = new Date();
+            nextHour.setHours(nextHour.getHours() + 1);
+            const timeString = nextHour.getHours().toString().padStart(2, '0') + ':00';
+            document.getElementById('bookingTime').value = timeString;
+
+            newBookingModal.classList.add('active');
+        }
+
+        // Close modal by ID
+        function closeModalById(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'success' ? 'rgba(0, 255, 136, 0.1)' :
+                          type === 'error' ? 'rgba(255, 71, 87, 0.1)' :
+                          type === 'warning' ? 'rgba(255, 204, 0, 0.1)' :
+                          'rgba(0, 243, 255, 0.1)'};
+                border: 1px solid ${type === 'success' ? 'var(--success-green)' :
+                          type === 'error' ? 'var(--error-red)' :
+                          type === 'warning' ? 'var(--warning-yellow)' :
+                          'var(--neon-blue)'};
+                color: ${type === 'success' ? 'var(--success-green)' :
+                       type === 'error' ? 'var(--error-red)' :
+                       type === 'warning' ? 'var(--warning-yellow)' :
+                       'var(--neon-blue)'};
+                border-radius: 10px;
+                z-index: 3000;
+                backdrop-filter: blur(10px);
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' :
+                                 type === 'error' ? 'exclamation-circle' :
+                                 type === 'warning' ? 'exclamation-triangle' :
+                                 'info-circle'}"></i>
+                ${message}
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Mobile menu toggle
+            mobileMenuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                mobileMenuToggle.innerHTML = sidebar.classList.contains('active')
+                    ? '<i class="fas fa-times"></i>'
+                    : '<i class="fas fa-bars"></i>';
+            });
+
+            // Filter tags
+            filterTags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    filterTags.forEach(t => t.classList.remove('active'));
+                    tag.classList.add('active');
+                    currentFilter = tag.dataset.filter;
+                    applyFilters();
+                });
+            });
+
+            // Filter inputs
+            searchInput.addEventListener('input', applyFilters);
+            dateFrom.addEventListener('change', applyFilters);
+            dateTo.addEventListener('change', applyFilters);
+            portTypeFilter.addEventListener('change', applyFilters);
+            sortBy.addEventListener('change', applyFilters);
+
+            // Clear filters
+            clearFiltersBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                initializeDateFilters();
+                portTypeFilter.value = 'all';
+                sortBy.value = 'date_desc';
+                filterTags.forEach(t => t.classList.remove('active'));
+                filterTags[0].classList.add('active');
+                currentFilter = 'all';
+                applyFilters();
+            });
+
+            // Refresh button
+            refreshBtn.addEventListener('click', () => {
+                showNotification('Refreshing bookings...', 'info');
+                setTimeout(() => {
+                    applyFilters();
+                    showNotification('Bookings refreshed successfully', 'success');
+                }, 500);
+            });
+
+            // Export button
+            exportBtn.addEventListener('click', () => {
+                // Simulate export
+                const submitBtn = exportBtn;
+                const originalText = submitBtn.innerHTML;
+
+                submitBtn.innerHTML = '<span class="loading"></span> Exporting...';
+                submitBtn.disabled = true;
+
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    showNotification('Export completed successfully', 'success');
+
+                    // Create and download CSV
+                    const csvContent = convertToCSV(currentBookings);
+                    downloadCSV(csvContent, `bookings_export_${new Date().toISOString().split('T')[0]}.csv`);
+                }, 1500);
+            });
+
+            // Add booking button
+            addBookingBtn.addEventListener('click', openNewBookingModal);
+
+            // Close modals
+            closeNewBookingModal.addEventListener('click', () => closeModalById('newBookingModal'));
+            closeDetailsModal.addEventListener('click', () => closeModalById('bookingDetailsModal'));
+            closeStatusModal.addEventListener('click', () => closeModalById('statusModal'));
+            document.getElementById('cancelBookingBtn').addEventListener('click', () => closeModalById('newBookingModal'));
+            document.getElementById('cancelStatusBtn').addEventListener('click', () => closeModalById('statusModal'));
+
+            // Modal background close
+            [newBookingModal, bookingDetailsModal, statusModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            });
+
+            // New booking form submission
+            newBookingForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const submitBtn = document.getElementById('createBookingBtn');
+                const originalText = submitBtn.innerHTML;
+
+                submitBtn.innerHTML = '<span class="loading"></span> Creating...';
+                submitBtn.disabled = true;
+
+                // Simulate API call
+                setTimeout(() => {
+                    // Create new booking
+                    const selectedPort = availablePorts.find(p => p.id == newBookingPort.value);
+
+                    const newBooking = {
+                        id: bookings.length + 1,
+                        bookingId: 'VLTV-' + new Date().getFullYear() + '-' + String(bookings.length + 1001).padStart(4, '0'),
+                        user: {
+                            name: document.getElementById('customerName').value,
+                            email: document.getElementById('customerEmail').value,
+                            phone: 'Not provided',
+                            membership: 'Manual Booking'
+                        },
+                        vehicle: {
+                            model: document.getElementById('vehicleModel').value,
+                            license: document.getElementById('licensePlate').value || 'N/A',
+                            type: 'Unknown',
+                            battery: 'Unknown'
+                        },
+                        port: {
+                            number: selectedPort.number,
+                            type: selectedPort.type,
+                            power: selectedPort.power,
+                            price: selectedPort.price
+                        },
+                        date: document.getElementById('bookingDate').value,
+                        time: document.getElementById('bookingTime').value,
+                        duration: document.getElementById('bookingDuration').options[document.getElementById('bookingDuration').selectedIndex].text,
+                        amount: 0, // Would calculate based on duration and price
+                        status: 'confirmed',
+                        created_at: new Date().toISOString().split('.')[0].replace('T', ' '),
+                        payment_status: 'Manual',
+                        notes: document.getElementById('bookingNotes').value,
+                        station: 'Downtown Station DT-001'
+                    };
+
+                    bookings.unshift(newBooking);
+                    applyFilters();
+
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    newBookingForm.reset();
+                    closeModalById('newBookingModal');
+
+                    showNotification('Booking created successfully', 'success');
+                }, 1500);
+            });
+
+            // Status change confirmation
+            document.getElementById('confirmStatusBtn').addEventListener('click', () => {
+                const booking = bookings.find(b => b.id === selectedBookingId);
+                if (booking) {
+                    const newStatus = statusSelect.value;
+
+                    booking.status = newStatus;
+                    window.location.href=`/manage-booking/${selectedBookingId}/${newStatus}/`;
+                    applyFilters();
+                    closeModalById('statusModal');
+
+                    if (bookingDetailsModal.classList.contains('active')) {
+                        viewBookingDetails(selectedBookingId);
+                    }
+
+                    showNotification(`Booking status updated to ${newStatus}`, 'success');
+                }
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                // Ctrl + N for new booking
+                if (e.ctrlKey && e.key === 'n') {
+                    e.preventDefault();
+                    openNewBookingModal();
+                }
+
+                // Esc to close modal
+                if (e.key === 'Escape') {
+                    closeModalById('newBookingModal');
+                    closeModalById('bookingDetailsModal');
+                    closeModalById('statusModal');
+                }
+
+                // Ctrl + F to focus search
+                if (e.ctrlKey && e.key === 'f') {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+        }
+
+        // Convert bookings to CSV
+        function convertToCSV(bookingsArray) {
+            const headers = ['Booking ID', 'Customer', 'Email', 'Vehicle', 'License', 'Port', 'Date', 'Time', 'Duration', 'Amount', 'Status', 'Payment Status'];
+
+            const rows = bookingsArray.map(booking => [
+                booking.bookingId,
+                booking.user.name,
+                booking.user.email,
+                booking.vehicle.model,
+                booking.vehicle.license,
+                `Port ${booking.port.number}`,
+                booking.date,
+                booking.time,
+                booking.duration,
+                `$${booking.amount.toFixed(2)}`,
+                capitalizeFirstLetter(booking.status),
+                booking.payment_status
+            ]);
+
+            return [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+            ].join('\n');
+        }
+
+        // Download CSV
+        function downloadCSV(csvContent, fileName) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+
+            if (navigator.msSaveBlob) { // IE 10+
+                navigator.msSaveBlob(blob, fileName);
+            } else {
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
